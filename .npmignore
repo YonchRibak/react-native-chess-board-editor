@@ -1,0 +1,30 @@
+# Development files
+example/
+.vscode/
+.idea/
+
+# Source
+src/
+
+# Tests
+**/__tests__/
+**/__fixtures__/
+**/__mocks__/
+*.test.ts
+*.test.tsx
+*.spec.ts
+*.spec.tsx
+
+# Config
+.eslintrc.js
+.prettierrc.js
+tsconfig.json
+tsconfig.build.json
+babel.config.js
+jest.config.js
+
+# Misc
+*.log
+.DS_Store
+node_modules/
+coverage/
