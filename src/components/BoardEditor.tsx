@@ -116,14 +116,9 @@ export const BoardEditor: React.FC<BoardEditorProps> = ({
   return (
     <ScrollView
       style={[styles.container, containerStyle]}
-      horizontal
-      showsHorizontalScrollIndicator={false}
+      contentContainerStyle={styles.contentContainer}
+      showsVerticalScrollIndicator={false}
     >
-      <ScrollView
-        style={styles.verticalScroll}
-        contentContainerStyle={styles.contentContainer}
-        showsVerticalScrollIndicator={false}
-      >
         {/* Black Piece Bank - Above Board */}
         {showPieceBank && (
           <View style={styles.section}>
@@ -211,15 +206,11 @@ export const BoardEditor: React.FC<BoardEditorProps> = ({
           )}
         </View>
       </ScrollView>
-    </ScrollView>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
-  },
-  verticalScroll: {
     flex: 1,
   },
   contentContainer: {
@@ -231,9 +222,11 @@ const styles = StyleSheet.create({
   },
   section: {
     marginBottom: 16,
-    minWidth: 300,
+    width: '100%',
+    maxWidth: 400,
   },
   controlsContainer: {
-    minWidth: 300,
+    width: '100%',
+    maxWidth: 400,
   },
 });

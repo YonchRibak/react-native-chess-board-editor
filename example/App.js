@@ -28,6 +28,17 @@ export default function App() {
           initialFen={fen}
           onFenChange={setFen}
           squareSize={35}
+          containerStyle={styles.boardEditor}
+          uiConfig={{
+            bankLayout: 'horizontal',
+            showFenDisplay: true,
+            fenEditable: true,
+            showCastlingRights: true,
+            showEnPassantInput: true,
+            showTurnToggler: true,
+            showPieceBank: true,
+            flipped: false,
+          }}
         />
         <StatusBar style="auto" />
       </SafeAreaView>
@@ -45,6 +56,9 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     borderBottomWidth: 1,
     borderBottomColor: '#e0e0e0',
+  },
+  boardEditor: {
+    flex: 1,
   },
   refreshButton: {
     backgroundColor: '#2196F3',
