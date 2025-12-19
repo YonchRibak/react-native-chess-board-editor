@@ -5,6 +5,7 @@ import {
   TextInput,
   StyleSheet,
   TouchableOpacity,
+  Clipboard,
 } from 'react-native';
 import type { FenDisplayProps } from '../types';
 import { isValidFenStructure } from '../utils/fen';
@@ -23,6 +24,7 @@ export const FenDisplay: React.FC<FenDisplayProps> = ({
   const [localFen, setLocalFen] = useState(fen);
   const [isEditing, setIsEditing] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [copied, setCopied] = useState(false);
 
   React.useEffect(() => {
     if (!isEditing) {
@@ -55,17 +57,33 @@ export const FenDisplay: React.FC<FenDisplayProps> = ({
     setIsEditing(false);
   };
 
+  const handleCopy = () => {
+    Clipboard.setString(fen);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
+  };
+
   if (!editable) {
     return (
       <View style={[styles.container, containerStyle]}>
         <Text style={styles.label}>FEN:</Text>
-        <Text
-          style={[styles.fenText, inputStyle]}
-          selectable
-          accessibilityLabel={`FEN: ${fen}`}
-        >
-          {fen}
-        </Text>
+        <View style={styles.fenContainer}>
+          <Text
+            style={[styles.fenText, inputStyle]}
+            selectable
+            accessibilityLabel={`FEN: ${fen}`}
+          >
+            {fen}
+          </Text>
+          <TouchableOpacity
+            style={styles.copyButtonInside}
+            onPress={handleCopy}
+            accessibilityLabel="Copy FEN to clipboard"
+          >
+            <Text style={styles.copyIconInside}>{copied ? '✓' : '⎘'}</Text>
+          </TouchableOpacity>
+        </View>
+        {copied && <Text style={styles.copiedText}>Copied!</Text>}
       </View>
     );
   }
@@ -74,24 +92,34 @@ export const FenDisplay: React.FC<FenDisplayProps> = ({
     <View style={[styles.container, containerStyle]}>
       <Text style={styles.label}>FEN:</Text>
       <View style={styles.editableContainer}>
-        <TextInput
-          style={[
-            styles.input,
-            error ? styles.inputError : undefined,
-            inputStyle,
-          ]}
-          value={localFen}
-          onChangeText={setLocalFen}
-          onFocus={() => setIsEditing(true)}
-          placeholder="Enter FEN string"
-          autoCapitalize="none"
-          autoCorrect={false}
-          multiline
-          numberOfLines={2}
-          accessibilityLabel="FEN input"
-          accessibilityHint="Enter a valid FEN string"
-        />
+        <View style={styles.inputWrapper}>
+          <TextInput
+            style={[
+              styles.input,
+              error ? styles.inputError : undefined,
+              inputStyle,
+            ]}
+            value={localFen}
+            onChangeText={setLocalFen}
+            onFocus={() => setIsEditing(true)}
+            placeholder="Enter FEN string"
+            autoCapitalize="none"
+            autoCorrect={false}
+            multiline
+            numberOfLines={2}
+            accessibilityLabel="FEN input"
+            accessibilityHint="Enter a valid FEN string"
+          />
+          <TouchableOpacity
+            style={styles.copyButtonInside}
+            onPress={handleCopy}
+            accessibilityLabel="Copy FEN to clipboard"
+          >
+            <Text style={styles.copyIconInside}>{copied ? '✓' : '⎘'}</Text>
+          </TouchableOpacity>
+        </View>
         {error && <Text style={styles.errorText}>{error}</Text>}
+        {copied && <Text style={styles.copiedText}>Copied!</Text>}
         {isEditing && (
           <View style={styles.buttonContainer}>
             <TouchableOpacity
@@ -125,15 +153,42 @@ const styles = StyleSheet.create({
     marginBottom: 8,
     color: '#333',
   },
+  fenContainer: {
+    position: 'relative',
+  },
   fenText: {
     fontSize: 13,
     fontFamily: 'monospace',
     color: '#555',
     backgroundColor: '#f5f5f5',
     padding: 12,
+    paddingRight: 44,
     borderRadius: 8,
     borderWidth: 1,
     borderColor: '#ddd',
+  },
+  inputWrapper: {
+    position: 'relative',
+  },
+  copyButtonInside: {
+    position: 'absolute',
+    right: 8,
+    top: 8,
+    backgroundColor: 'transparent',
+    padding: 8,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  copyIconInside: {
+    fontSize: 20,
+    color: '#666',
+  },
+  copiedText: {
+    color: '#4CAF50',
+    fontSize: 12,
+    fontWeight: '600',
+    marginTop: 4,
+    marginLeft: 4,
   },
   editableContainer: {
     flex: 1,
@@ -144,6 +199,7 @@ const styles = StyleSheet.create({
     color: '#333',
     backgroundColor: '#fff',
     padding: 12,
+    paddingRight: 44,
     borderRadius: 8,
     borderWidth: 1,
     borderColor: '#ccc',
