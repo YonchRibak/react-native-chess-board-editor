@@ -102,6 +102,8 @@ export interface EditableBoardProps {
 export interface PieceBankProps {
   /** Callback when a piece is dropped from the bank */
   onPieceDrop?: (piece: PieceSymbol, targetSquare: Square) => void;
+  /** Callback when a piece is dropped with screen coordinates */
+  onPieceDropCoords?: (piece: PieceSymbol, x: number, y: number) => void;
   /** Layout orientation */
   layout?: 'horizontal' | 'vertical';
   /** Style for the bank container */
@@ -110,6 +112,10 @@ export interface PieceBankProps {
   pieceStyle?: StyleProp<ViewStyle>;
   /** Piece size */
   pieceSize?: number;
+  /** Color filter - show only white, black, or all pieces */
+  color?: 'white' | 'black';
+  /** Whether to show the label above the pieces */
+  showLabel?: boolean;
 }
 
 /**
@@ -150,6 +156,8 @@ export interface EnPassantInputProps {
   enPassantSquare: string;
   /** Callback when en passant square changes */
   onEnPassantChange: (square: string) => void;
+  /** Current FEN string for validation */
+  fen?: string;
   /** Container style */
   containerStyle?: StyleProp<ViewStyle>;
   /** Input style */

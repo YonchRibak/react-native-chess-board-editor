@@ -19,6 +19,9 @@
       "react-native-chess-board-editor": ["./src/index"]
     }
   },
+  "include": [
+    "src"
+  ],
   "exclude": [
     "node_modules",
     "lib",

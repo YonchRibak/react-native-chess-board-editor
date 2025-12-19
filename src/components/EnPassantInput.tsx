@@ -7,59 +7,66 @@ import {
   TouchableOpacity,
 } from 'react-native';
 import type { EnPassantInputProps } from '../types';
-import { isValidEnPassantSquareFormat } from '../utils/fen';
+import { isValidEnPassantSquareFormat, isValidEnPassantSquare } from '../utils/fen';
 
 /**
  * EnPassantInput Component
- * Input for specifying the en passant target square with format validation
+ * Input for specifying the en passant target square with format and position validation
  */
 export const EnPassantInput: React.FC<EnPassantInputProps> = ({
   enPassantSquare,
   onEnPassantChange,
+  fen,
   containerStyle,
   inputStyle,
 }) => {
-  const [localValue, setLocalValue] = useState(enPassantSquare);
+  const [localValue, setLocalValue] = useState(enPassantSquare === '-' ? '' : enPassantSquare);
   const [error, setError] = useState<string | null>(null);
 
   React.useEffect(() => {
-    setLocalValue(enPassantSquare);
+    setLocalValue(enPassantSquare === '-' ? '' : enPassantSquare);
     setError(null);
   }, [enPassantSquare]);
 
   const handleChange = (value: string) => {
-    setLocalValue(value);
+    const trimmed = value.trim().toLowerCase();
+    setLocalValue(trimmed);
 
     // Clear error as user types
     if (error) {
       setError(null);
     }
-  };
 
-  const handleSubmit = () => {
-    const trimmed = localValue.trim().toLowerCase();
-
-    // Empty or '-' means no en passant
-    if (trimmed === '' || trimmed === '-') {
-      setError(null);
+    // Auto-apply when empty or valid
+    if (trimmed === '') {
       onEnPassantChange('-');
-      setLocalValue('-');
       return;
     }
 
-    // Validate format
-    if (!isValidEnPassantSquareFormat(trimmed)) {
-      setError('Must be a square on rank 3 or 6 (e.g., e3, d6) or "-"');
-      return;
-    }
+    // Only validate and apply if exactly 2 characters (complete square)
+    if (trimmed.length === 2) {
+      // Check format first
+      if (!isValidEnPassantSquareFormat(trimmed)) {
+        setError('Must be rank 3 (e.g., e3) or rank 6 (e.g., d6)');
+        return;
+      }
 
-    setError(null);
-    onEnPassantChange(trimmed);
-    setLocalValue(trimmed);
+      // If FEN provided, do strict validation
+      if (fen) {
+        if (!isValidEnPassantSquare(fen, trimmed)) {
+          setError('Invalid: no pawns in correct position for en passant');
+          return;
+        }
+      }
+
+      // Valid - apply immediately
+      setError(null);
+      onEnPassantChange(trimmed);
+    }
   };
 
   const handleClear = () => {
-    setLocalValue('-');
+    setLocalValue('');
     setError(null);
     onEnPassantChange('-');
   };
@@ -76,16 +83,16 @@ export const EnPassantInput: React.FC<EnPassantInputProps> = ({
           ]}
           value={localValue}
           onChangeText={handleChange}
-          onBlur={handleSubmit}
-          onSubmitEditing={handleSubmit}
-          placeholder="e.g., e3 or -"
+          placeholder="e.g., e3"
           autoCapitalize="none"
           autoCorrect={false}
           maxLength={2}
+          returnKeyType="done"
+          blurOnSubmit={true}
           accessibilityLabel="En passant target square"
-          accessibilityHint="Enter a square on rank 3 or 6, or dash for none"
+          accessibilityHint="Enter a square on rank 3 or 6"
         />
-        {localValue !== '-' && (
+        {localValue !== '' && (
           <TouchableOpacity
             style={styles.clearButton}
             onPress={handleClear}
@@ -97,7 +104,7 @@ export const EnPassantInput: React.FC<EnPassantInputProps> = ({
       </View>
       {error && <Text style={styles.errorText}>{error}</Text>}
       <Text style={styles.helpText}>
-        Valid squares: a3-h3 (white to move) or a6-h6 (black to move)
+        {fen ? 'Validates pawn positions automatically' : 'Valid squares: a3-h3 or a6-h6'}
       </Text>
     </View>
   );

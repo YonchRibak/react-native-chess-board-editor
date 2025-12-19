@@ -22,7 +22,7 @@ describe('EnPassantInput Component', () => {
       expect(input.props.value).toBe('e3');
     });
 
-    it('should render input with "-" when no en passant', () => {
+    it('should render input with empty string when no en passant', () => {
       const { getByLabelText } = render(
         <EnPassantInput
           enPassantSquare="-"
@@ -31,10 +31,10 @@ describe('EnPassantInput Component', () => {
       );
 
       const input = getByLabelText('En passant target square');
-      expect(input.props.value).toBe('-');
+      expect(input.props.value).toBe('');
     });
 
-    it('should show clear button when value is not "-"', () => {
+    it('should show clear button when value is not empty', () => {
       const { getByLabelText } = render(
         <EnPassantInput
           enPassantSquare="e3"
@@ -45,7 +45,7 @@ describe('EnPassantInput Component', () => {
       expect(getByLabelText('Clear en passant')).toBeTruthy();
     });
 
-    it('should not show clear button when value is "-"', () => {
+    it('should not show clear button when value is empty', () => {
       const { queryByLabelText } = render(
         <EnPassantInput
           enPassantSquare="-"
@@ -65,13 +65,13 @@ describe('EnPassantInput Component', () => {
       );
 
       expect(
-        getByText('Valid squares: a3-h3 (white to move) or a6-h6 (black to move)')
+        getByText('Valid squares: a3-h3 or a6-h6')
       ).toBeTruthy();
     });
   });
 
   describe('interaction', () => {
-    it('should call onEnPassantChange with valid square on blur', () => {
+    it('should call onEnPassantChange with valid square immediately', () => {
       const { getByLabelText } = render(
         <EnPassantInput
           enPassantSquare="-"
@@ -81,7 +81,6 @@ describe('EnPassantInput Component', () => {
 
       const input = getByLabelText('En passant target square');
       fireEvent.changeText(input, 'e3');
-      fireEvent(input, 'blur');
 
       expect(mockOnEnPassantChange).toHaveBeenCalledWith('e3');
     });
@@ -96,7 +95,6 @@ describe('EnPassantInput Component', () => {
 
       const input = getByLabelText('En passant target square');
       fireEvent.changeText(input, 'E3');
-      fireEvent(input, 'blur');
 
       expect(mockOnEnPassantChange).toHaveBeenCalledWith('e3');
     });
@@ -111,7 +109,6 @@ describe('EnPassantInput Component', () => {
 
       const input = getByLabelText('En passant target square');
       fireEvent.changeText(input, '');
-      fireEvent(input, 'blur');
 
       expect(mockOnEnPassantChange).toHaveBeenCalledWith('-');
     });
@@ -126,10 +123,9 @@ describe('EnPassantInput Component', () => {
 
       const input = getByLabelText('En passant target square');
       fireEvent.changeText(input, 'e4');
-      fireEvent(input, 'blur');
 
       expect(
-        getByText('Must be a square on rank 3 or 6 (e.g., e3, d6) or "-"')
+        getByText('Must be rank 3 (e.g., e3) or rank 6 (e.g., d6)')
       ).toBeTruthy();
       expect(mockOnEnPassantChange).not.toHaveBeenCalled();
     });
@@ -144,10 +140,9 @@ describe('EnPassantInput Component', () => {
 
       const input = getByLabelText('En passant target square');
       fireEvent.changeText(input, 'i3');
-      fireEvent(input, 'blur');
 
       expect(
-        getByText('Must be a square on rank 3 or 6 (e.g., e3, d6) or "-"')
+        getByText('Must be rank 3 (e.g., e3) or rank 6 (e.g., d6)')
       ).toBeTruthy();
     });
 
@@ -161,16 +156,15 @@ describe('EnPassantInput Component', () => {
 
       const input = getByLabelText('En passant target square');
       fireEvent.changeText(input, 'e4');
-      fireEvent(input, 'blur');
 
       expect(
-        getByText('Must be a square on rank 3 or 6 (e.g., e3, d6) or "-"')
+        getByText('Must be rank 3 (e.g., e3) or rank 6 (e.g., d6)')
       ).toBeTruthy();
 
       fireEvent.changeText(input, 'e');
 
       expect(
-        queryByText('Must be a square on rank 3 or 6 (e.g., e3, d6) or "-"')
+        queryByText('Must be rank 3 (e.g., e3) or rank 6 (e.g., d6)')
       ).toBeNull();
     });
 
