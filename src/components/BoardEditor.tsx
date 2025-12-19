@@ -1,6 +1,6 @@
 import React, { useState, useRef } from 'react';
 import { View, ScrollView, StyleSheet } from 'react-native';
-import type { BoardEditorProps, PieceSymbol, DefaultEditorTools, EditorToolsLayout } from '../types';
+import type { BoardEditorProps, PieceSymbol, DefaultEditorTools, EditorToolsLayout, PieceSet } from '../types';
 import { EditableBoard } from './EditableBoard';
 import { PieceBank } from './PieceBank';
 import { FenDisplay } from './FenDisplay';
@@ -8,9 +8,11 @@ import { CastlingRightsTogglers } from './CastlingRightsTogglers';
 import { EnPassantInput } from './EnPassantInput';
 import { TurnToggler } from './TurnToggler';
 import { EditorToolsPanel } from './EditorToolsPanel';
+import { PieceSetSelector } from './PieceSetSelector';
 import {
   DEFAULT_FEN,
   DEFAULT_SQUARE_SIZE,
+  DEFAULT_PIECE_SET,
   parseFen,
   updateCastlingRights,
   updateEnPassant,
@@ -33,8 +35,11 @@ export const BoardEditor: React.FC<BoardEditorProps> = ({
   lightSquareColor,
   darkSquareColor,
   renderEditorTools,
+  initialPieceSet = DEFAULT_PIECE_SET,
+  onPieceSetChange,
 }) => {
   const [fen, setFen] = useState(initialFen);
+  const [pieceSet, setPieceSet] = useState<PieceSet>(initialPieceSet);
   const boardRef = useRef<View>(null);
   const [boardLayout, setBoardLayout] = useState({ x: 0, y: 0, width: 0, height: 0 });
 
@@ -49,6 +54,7 @@ export const BoardEditor: React.FC<BoardEditorProps> = ({
     flipped = false,
     showEditorToolsPanel = true,
     editorToolsPanelExpanded = false,
+    showPieceSetSelector = true,
   } = uiConfig;
 
   const components = parseFen(fen);
@@ -72,6 +78,11 @@ export const BoardEditor: React.FC<BoardEditorProps> = ({
   const handleTurnChange = (turn: 'w' | 'b') => {
     const newFen = updateActiveColor(fen, turn);
     handleFenChange(newFen);
+  };
+
+  const handlePieceSetChange = (newPieceSet: PieceSet) => {
+    setPieceSet(newPieceSet);
+    onPieceSetChange?.(newPieceSet);
   };
 
   const handlePieceDropFromBank = (piece: PieceSymbol, x: number, y: number) => {
@@ -112,7 +123,7 @@ export const BoardEditor: React.FC<BoardEditorProps> = ({
   };
 
   const handleBoardLayout = () => {
-    boardRef.current?.measure((x, y, width, height, pageX, pageY) => {
+    boardRef.current?.measure((_x, _y, width, height, pageX, pageY) => {
       setBoardLayout({ x: pageX, y: pageY, width, height });
     });
   };
@@ -157,10 +168,18 @@ export const BoardEditor: React.FC<BoardEditorProps> = ({
       return renderEditorTools(defaultTools);
     }
 
-    // Default: all tools in panel, nothing outside
+    // Default: all tools in panel (including piece set selector), nothing outside
     return {
       inPanel: (
         <>
+          {showPieceSetSelector && (
+            <View style={styles.toolSection} key="piece-set-selector">
+              <PieceSetSelector
+                selectedPieceSet={pieceSet}
+                onPieceSetChange={handlePieceSetChange}
+              />
+            </View>
+          )}
           {defaultTools.turnToggler}
           {defaultTools.castlingRights}
           {defaultTools.enPassantInput}
@@ -184,6 +203,7 @@ export const BoardEditor: React.FC<BoardEditorProps> = ({
               color="black"
               showLabel={true}
               onPieceDropCoords={handlePieceDropFromBank}
+              pieceSet={pieceSet}
             />
           </View>
         )}
@@ -201,6 +221,7 @@ export const BoardEditor: React.FC<BoardEditorProps> = ({
             lightSquareColor={lightSquareColor}
             darkSquareColor={darkSquareColor}
             flipped={flipped}
+            pieceSet={pieceSet}
           />
         </View>
 
@@ -213,6 +234,7 @@ export const BoardEditor: React.FC<BoardEditorProps> = ({
               color="white"
               showLabel={true}
               onPieceDropCoords={handlePieceDropFromBank}
+              pieceSet={pieceSet}
             />
           </View>
         )}

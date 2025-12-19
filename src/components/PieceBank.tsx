@@ -46,6 +46,7 @@ export const PieceBank: React.FC<PieceBankProps> = ({
   color,
   showLabel = true,
   onPieceDropCoords,
+  pieceSet = 'cburnett',
 }) => {
   const [dragging, setDragging] = useState<DraggingState | null>(null);
   const [bankLayout, setBankLayout] = useState<BankLayout>({ x: 0, y: 0, width: 0, height: 0 });
@@ -110,6 +111,7 @@ export const PieceBank: React.FC<PieceBankProps> = ({
       onDragEnd={handleDragEnd}
       bankLayout={bankLayout}
       isDragging={dragging?.piece === piece}
+      pieceSet={pieceSet}
     />
   );
 
@@ -158,6 +160,7 @@ export const PieceBank: React.FC<PieceBankProps> = ({
             piece={dragging.piece}
             size={pieceSize * 0.8}
             style={pieceStyle}
+            pieceSet={pieceSet}
           />
         )}
       </Animated.View>
@@ -174,6 +177,7 @@ interface DraggableBankPieceProps {
   onDragEnd: (x: number, y: number) => void;
   bankLayout: BankLayout;
   isDragging: boolean;
+  pieceSet?: import('../types').PieceSet;
 }
 
 const DraggableBankPiece: React.FC<DraggableBankPieceProps> = ({
@@ -185,6 +189,7 @@ const DraggableBankPiece: React.FC<DraggableBankPieceProps> = ({
   onDragEnd,
   bankLayout,
   isDragging,
+  pieceSet,
 }) => {
   const panGesture = Gesture.Pan()
     .onStart((event) => {
@@ -223,7 +228,7 @@ const DraggableBankPiece: React.FC<DraggableBankPieceProps> = ({
             { opacity: isDragging ? 0.3 : 1 },
           ]}
         >
-          <Piece piece={piece} size={pieceSize * 0.8} style={pieceStyle} />
+          <Piece piece={piece} size={pieceSize * 0.8} style={pieceStyle} pieceSet={pieceSet} />
         </Animated.View>
       </GestureDetector>
     </View>

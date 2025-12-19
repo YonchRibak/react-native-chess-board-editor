@@ -7,6 +7,23 @@ import type { StyleProp, ViewStyle, TextStyle } from 'react-native';
 export type PieceSymbol = 'P' | 'N' | 'B' | 'R' | 'Q' | 'K' | 'p' | 'n' | 'b' | 'r' | 'q' | 'k';
 
 /**
+ * Available piece set styles
+ */
+export type PieceSet = 'unicode' | 'cburnett' | 'alpha';
+
+/**
+ * Piece set configuration
+ */
+export interface PieceSetConfig {
+  /** Unique identifier for the piece set */
+  id: PieceSet;
+  /** Display name for the piece set */
+  name: string;
+  /** Description of the piece set style */
+  description: string;
+}
+
+/**
  * Chess piece colors
  */
 export type PieceColor = 'w' | 'b';
@@ -94,6 +111,8 @@ export interface EditableBoardProps {
   boardStyle?: StyleProp<ViewStyle>;
   /** Whether to flip the board (show from black's perspective) */
   flipped?: boolean;
+  /** Piece set style to use */
+  pieceSet?: PieceSet;
 }
 
 /**
@@ -116,6 +135,8 @@ export interface PieceBankProps {
   color?: 'white' | 'black';
   /** Whether to show the label above the pieces */
   showLabel?: boolean;
+  /** Piece set style to use */
+  pieceSet?: PieceSet;
 }
 
 /**
@@ -239,6 +260,8 @@ export interface BoardEditorUIConfig {
   showEditorToolsPanel?: boolean;
   /** Initial expanded state for editor tools panel */
   editorToolsPanelExpanded?: boolean;
+  /** Whether to show piece set selector */
+  showPieceSetSelector?: boolean;
 }
 
 /**
@@ -261,4 +284,8 @@ export interface BoardEditorProps {
   darkSquareColor?: string;
   /** Custom render function for editor tools - return object with 'inPanel' and 'outside' content */
   renderEditorTools?: (defaultTools: DefaultEditorTools) => EditorToolsLayout;
+  /** Initial piece set style */
+  initialPieceSet?: PieceSet;
+  /** Callback when piece set changes */
+  onPieceSetChange?: (pieceSet: PieceSet) => void;
 }

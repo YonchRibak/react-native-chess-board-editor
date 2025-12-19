@@ -5,7 +5,9 @@
       "Bash(then cat package.json)",
       "Bash(else echo \"No package.json found\")",
       "Bash(fi)",
-      "Bash(npm install:*)"
+      "Bash(npm install:*)",
+      "WebFetch(domain:raw.githubusercontent.com)",
+      "Bash(npm run typescript:*)"
     ],
     "deny": [],
     "ask": []

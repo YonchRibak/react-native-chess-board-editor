@@ -13,4 +13,5 @@ export { CastlingRightsTogglers } from './components/CastlingRightsTogglers';
 export { EnPassantInput } from './components/EnPassantInput';
 export { TurnToggler } from './components/TurnToggler';
 export { EditorToolsPanel } from './components/EditorToolsPanel';
+export { PieceSetSelector } from './components/PieceSetSelector';
 export { BoardEditor } from './components/BoardEditor';

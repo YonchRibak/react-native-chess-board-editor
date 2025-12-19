@@ -7,12 +7,12 @@ import { PIECE_UNICODE } from '../../utils/constants';
 describe('Piece Component', () => {
   describe('rendering', () => {
     it('should render white pawn', () => {
-      const { getByText } = render(<Piece piece="P" />);
+      const { getByText } = render(<Piece piece="P" pieceSet="unicode" />);
       expect(getByText(PIECE_UNICODE.P)).toBeTruthy();
     });
 
     it('should render black pawn', () => {
-      const { getByText } = render(<Piece piece="p" />);
+      const { getByText } = render(<Piece piece="p" pieceSet="unicode" />);
       expect(getByText(PIECE_UNICODE.p)).toBeTruthy();
     });
 
@@ -20,7 +20,7 @@ describe('Piece Component', () => {
       const whitePieces: PieceSymbol[] = ['P', 'N', 'B', 'R', 'Q', 'K'];
 
       whitePieces.forEach((piece) => {
-        const { getByText } = render(<Piece piece={piece} />);
+        const { getByText } = render(<Piece piece={piece} pieceSet="unicode" />);
         expect(getByText(PIECE_UNICODE[piece])).toBeTruthy();
       });
     });
@@ -29,7 +29,7 @@ describe('Piece Component', () => {
       const blackPieces: PieceSymbol[] = ['p', 'n', 'b', 'r', 'q', 'k'];
 
       blackPieces.forEach((piece) => {
-        const { getByText } = render(<Piece piece={piece} />);
+        const { getByText } = render(<Piece piece={piece} pieceSet="unicode" />);
         expect(getByText(PIECE_UNICODE[piece])).toBeTruthy();
       });
     });
@@ -37,7 +37,7 @@ describe('Piece Component', () => {
 
   describe('styling', () => {
     it('should apply custom size', () => {
-      const { getByText } = render(<Piece piece="P" size={50} />);
+      const { getByText } = render(<Piece piece="P" size={50} pieceSet="unicode" />);
       const piece = getByText(PIECE_UNICODE.P);
 
       expect(piece.props.style).toEqual(
@@ -51,15 +51,15 @@ describe('Piece Component', () => {
     });
 
     it('should apply custom style', () => {
-      const customStyle = { color: 'red' };
-      const { getByText } = render(<Piece piece="P" style={customStyle} />);
+      const customStyle = { opacity: 0.5 };
+      const { getByText } = render(<Piece piece="P" style={customStyle} pieceSet="unicode" />);
       const piece = getByText(PIECE_UNICODE.P);
 
       expect(piece.props.style).toEqual(expect.arrayContaining([customStyle]));
     });
 
     it('should use default size when not specified', () => {
-      const { getByText } = render(<Piece piece="P" />);
+      const { getByText } = render(<Piece piece="P" pieceSet="unicode" />);
       const piece = getByText(PIECE_UNICODE.P);
 
       expect(piece.props.style).toEqual(

@@ -49,6 +49,7 @@ export const EditableBoard: React.FC<EditableBoardProps> = ({
   pieceStyle,
   boardStyle,
   flipped = false,
+  pieceSet = 'cburnett',
 }) => {
   const [draggingPiece, setDraggingPiece] = useState<DraggingPiece | null>(
     null
@@ -135,6 +136,7 @@ export const EditableBoard: React.FC<EditableBoardProps> = ({
           translateX={translateX}
           translateY={translateY}
           isBeingDragged={isBeingDragged}
+          pieceSet={pieceSet}
         />
       </View>
     );
@@ -178,6 +180,7 @@ export const EditableBoard: React.FC<EditableBoardProps> = ({
             piece={draggingPiece.piece}
             size={squareSize * 0.85}
             style={pieceStyle}
+            pieceSet={pieceSet}
           />
         )}
       </Animated.View>
@@ -196,6 +199,7 @@ interface DraggablePieceProps {
   translateX: SharedValue<number>;
   translateY: SharedValue<number>;
   isBeingDragged: boolean;
+  pieceSet?: import('../types').PieceSet;
 }
 
 const DraggablePiece: React.FC<DraggablePieceProps> = ({
@@ -209,6 +213,7 @@ const DraggablePiece: React.FC<DraggablePieceProps> = ({
   translateX,
   translateY,
   isBeingDragged,
+  pieceSet,
 }) => {
   const startX = useSharedValue(0);
   const startY = useSharedValue(0);
@@ -254,7 +259,7 @@ const DraggablePiece: React.FC<DraggablePieceProps> = ({
         ]}
       >
         {piece && (
-          <Piece piece={piece} size={squareSize * 0.85} style={pieceStyle} />
+          <Piece piece={piece} size={squareSize * 0.85} style={pieceStyle} pieceSet={pieceSet} />
         )}
       </Animated.View>
     </GestureDetector>

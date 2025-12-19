@@ -1,4 +1,4 @@
-import type { PieceSymbol } from '../types';
+import type { PieceSymbol, PieceSetConfig } from '../types';
 
 /**
  * Default square size in pixels
@@ -78,3 +78,29 @@ export const PIECE_UNICODE: Record<PieceSymbol, string> = {
   q: '♛',
   k: '♚',
 };
+
+/**
+ * Available piece sets configuration
+ */
+export const PIECE_SETS: PieceSetConfig[] = [
+  {
+    id: 'unicode',
+    name: 'Unicode',
+    description: 'Simple Unicode chess symbols',
+  },
+  {
+    id: 'cburnett',
+    name: 'CBurnett',
+    description: 'Classic professional style (used on Chess.com)',
+  },
+  {
+    id: 'alpha',
+    name: 'Alpha',
+    description: 'Modern minimalist design',
+  },
+];
+
+/**
+ * Default piece set
+ */
+export const DEFAULT_PIECE_SET = 'cburnett';
