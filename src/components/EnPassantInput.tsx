@@ -1,13 +1,10 @@
-import React, { useState } from 'react';
-import {
-  View,
-  Text,
-  TextInput,
-  StyleSheet,
-  TouchableOpacity,
-} from 'react-native';
+import React from 'react';
+import { View, Text, StyleSheet } from 'react-native';
 import type { EnPassantInputProps } from '../types';
-import { isValidEnPassantSquareFormat, isValidEnPassantSquare } from '../utils/fen';
+import { useEnPassantInput } from '../hooks/useEnPassantInput';
+import { ValidatedInput } from './ValidatedInput';
+import { ClearButton } from './ClearButton';
+import { EN_PASSANT_MESSAGES } from '../constants/validationMessages';
 
 /**
  * EnPassantInput Component
@@ -20,70 +17,18 @@ export const EnPassantInput: React.FC<EnPassantInputProps> = ({
   containerStyle,
   inputStyle,
 }) => {
-  const [localValue, setLocalValue] = useState(enPassantSquare === '-' ? '' : enPassantSquare);
-  const [error, setError] = useState<string | null>(null);
-
-  React.useEffect(() => {
-    setLocalValue(enPassantSquare === '-' ? '' : enPassantSquare);
-    setError(null);
-  }, [enPassantSquare]);
-
-  const handleChange = (value: string) => {
-    const trimmed = value.trim().toLowerCase();
-    setLocalValue(trimmed);
-
-    // Clear error as user types
-    if (error) {
-      setError(null);
-    }
-
-    // Auto-apply when empty or valid
-    if (trimmed === '') {
-      onEnPassantChange('-');
-      return;
-    }
-
-    // Only validate and apply if exactly 2 characters (complete square)
-    if (trimmed.length === 2) {
-      // Check format first
-      if (!isValidEnPassantSquareFormat(trimmed)) {
-        setError('Must be rank 3 (e.g., e3) or rank 6 (e.g., d6)');
-        return;
-      }
-
-      // If FEN provided, do strict validation
-      if (fen) {
-        if (!isValidEnPassantSquare(fen, trimmed)) {
-          setError('Invalid: no pawns in correct position for en passant');
-          return;
-        }
-      }
-
-      // Valid - apply immediately
-      setError(null);
-      onEnPassantChange(trimmed);
-    }
-  };
-
-  const handleClear = () => {
-    setLocalValue('');
-    setError(null);
-    onEnPassantChange('-');
-  };
+  const { localValue, error, helpText, handleChange, handleClear } =
+    useEnPassantInput(enPassantSquare, onEnPassantChange, fen);
 
   return (
     <View style={[styles.container, containerStyle]}>
       <Text style={styles.label}>En Passant Square:</Text>
       <View style={styles.inputContainer}>
-        <TextInput
-          style={[
-            styles.input,
-            error ? styles.inputError : undefined,
-            inputStyle,
-          ]}
+        <ValidatedInput
           value={localValue}
           onChangeText={handleChange}
-          placeholder="e.g., e3"
+          error={error}
+          placeholder={EN_PASSANT_MESSAGES.PLACEHOLDER}
           autoCapitalize="none"
           autoCorrect={false}
           maxLength={2}
@@ -91,21 +36,16 @@ export const EnPassantInput: React.FC<EnPassantInputProps> = ({
           blurOnSubmit={true}
           accessibilityLabel="En passant target square"
           accessibilityHint="Enter a square on rank 3 or 6"
+          inputStyle={inputStyle}
         />
-        {localValue !== '' && (
-          <TouchableOpacity
-            style={styles.clearButton}
-            onPress={handleClear}
-            accessibilityLabel="Clear en passant"
-          >
-            <Text style={styles.clearButtonText}>×</Text>
-          </TouchableOpacity>
-        )}
+        <ClearButton
+          onPress={handleClear}
+          visible={localValue !== ''}
+          accessibilityLabel="Clear en passant"
+        />
       </View>
       {error && <Text style={styles.errorText}>{error}</Text>}
-      <Text style={styles.helpText}>
-        {fen ? 'Validates pawn positions automatically' : 'Valid squares: a3-h3 or a6-h6'}
-      </Text>
+      <Text style={styles.helpText}>{helpText}</Text>
     </View>
   );
 };
@@ -123,39 +63,6 @@ const styles = StyleSheet.create({
   inputContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-  },
-  input: {
-    fontSize: 16,
-    fontFamily: 'monospace',
-    color: '#333',
-    backgroundColor: '#fff',
-    paddingHorizontal: 12,
-    paddingVertical: 10,
-    borderRadius: 8,
-    borderWidth: 1,
-    borderColor: '#ccc',
-    width: 80,
-    textAlign: 'center',
-  },
-  inputError: {
-    borderColor: '#ff3b30',
-    borderWidth: 2,
-  },
-  clearButton: {
-    marginLeft: 8,
-    width: 32,
-    height: 32,
-    borderRadius: 16,
-    backgroundColor: '#f5f5f5',
-    alignItems: 'center',
-    justifyContent: 'center',
-    borderWidth: 1,
-    borderColor: '#ddd',
-  },
-  clearButtonText: {
-    fontSize: 24,
-    color: '#666',
-    lineHeight: 24,
   },
   errorText: {
     color: '#ff3b30',

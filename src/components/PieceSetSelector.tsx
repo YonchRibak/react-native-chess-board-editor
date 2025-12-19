@@ -1,46 +1,70 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, type StyleProp, type ViewStyle } from 'react-native';
 import type { PieceSet } from '../types';
-import { PIECE_SETS } from '../utils/constants';
+import { getAvailablePieceSets } from '../utils/pieceRendererRegistry';
 import { Piece } from './Piece';
 
 export interface PieceSetSelectorProps {
   /** Currently selected piece set */
-  selectedPieceSet: PieceSet;
+  selectedPieceSet: PieceSet | string;
   /** Callback when piece set changes */
-  onPieceSetChange: (pieceSet: PieceSet) => void;
+  onPieceSetChange: (pieceSet: PieceSet | string) => void;
   /** Container style */
   containerStyle?: StyleProp<ViewStyle>;
   /** Whether to show the label */
   showLabel?: boolean;
+  /**
+   * Optional filter for which piece sets to show
+   * If not provided, shows all registered piece sets
+   * @example ['cburnett', 'alpha', 'myCustomSet']
+   */
+  availableSets?: string[];
 }
 
 /**
  * PieceSetSelector Component
  * Allows users to select different chess piece styles using king piece previews
+ * Automatically includes all registered piece sets (built-in and custom)
  */
 export const PieceSetSelector: React.FC<PieceSetSelectorProps> = ({
   selectedPieceSet,
   onPieceSetChange,
   containerStyle,
   showLabel = true,
+  availableSets,
 }) => {
+  // Get piece sets to display
+  const displayedPieceSets = useMemo(() => {
+    const allPieceSets = getAvailablePieceSets();
+
+    // If availableSets filter is provided, use it
+    if (availableSets) {
+      return availableSets.filter(set => allPieceSets.includes(set));
+    }
+
+    // Otherwise show all registered piece sets
+    return allPieceSets;
+  }, [availableSets]);
+
   return (
     <View style={[styles.container, containerStyle]}>
       {showLabel && <Text style={styles.label}>Piece Style</Text>}
       <View style={styles.optionsContainer}>
-        {PIECE_SETS.map((pieceSet) => {
-          const isSelected = pieceSet.id === selectedPieceSet;
+        {displayedPieceSets.map((pieceSetId) => {
+          const isSelected = pieceSetId === selectedPieceSet;
           return (
             <TouchableOpacity
-              key={pieceSet.id}
+              key={pieceSetId}
               style={[
                 styles.option,
                 isSelected && styles.optionSelected,
               ]}
-              onPress={() => onPieceSetChange(pieceSet.id)}
+              onPress={() => onPieceSetChange(pieceSetId)}
+              accessibilityLabel={`Select ${pieceSetId} piece set`}
+              accessibilityRole="button"
+              accessibilityState={{ selected: isSelected }}
             >
-              <Piece piece="K" size={40} pieceSet={pieceSet.id} />
+              <Piece piece="K" size={40} pieceSet={pieceSetId} />
             </TouchableOpacity>
           );
         })}

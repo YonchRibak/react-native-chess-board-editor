@@ -2,7 +2,7 @@ import React from 'react';
 import { render } from '@testing-library/react-native';
 import { Piece } from '../../components/Piece';
 import type { PieceSymbol } from '../../types';
-import { PIECE_UNICODE } from '../../utils/constants';
+import { PIECE_UNICODE } from '../../constants';
 
 describe('Piece Component', () => {
   describe('rendering', () => {

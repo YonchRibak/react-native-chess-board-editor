@@ -111,8 +111,8 @@ export interface EditableBoardProps {
   boardStyle?: StyleProp<ViewStyle>;
   /** Whether to flip the board (show from black's perspective) */
   flipped?: boolean;
-  /** Piece set style to use */
-  pieceSet?: PieceSet;
+  /** Piece set style to use (built-in or custom registered) */
+  pieceSet?: PieceSet | string;
 }
 
 /**
@@ -135,8 +135,8 @@ export interface PieceBankProps {
   color?: 'white' | 'black';
   /** Whether to show the label above the pieces */
   showLabel?: boolean;
-  /** Piece set style to use */
-  pieceSet?: PieceSet;
+  /** Piece set style to use (built-in or custom registered) */
+  pieceSet?: PieceSet | string;
 }
 
 /**
@@ -284,8 +284,11 @@ export interface BoardEditorProps {
   darkSquareColor?: string;
   /** Custom render function for editor tools - return object with 'inPanel' and 'outside' content */
   renderEditorTools?: (defaultTools: DefaultEditorTools) => EditorToolsLayout;
-  /** Initial piece set style */
-  initialPieceSet?: PieceSet;
+  /** Initial piece set style (built-in or custom registered) */
+  initialPieceSet?: PieceSet | string;
   /** Callback when piece set changes */
-  onPieceSetChange?: (pieceSet: PieceSet) => void;
+  onPieceSetChange?: (pieceSet: PieceSet | string) => void;
 }
+
+// Re-export bank-related types
+export type { DraggingState, ComponentLayout } from './bank';

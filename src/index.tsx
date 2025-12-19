@@ -1,8 +1,23 @@
 // Export types
 export * from './types';
+export type {
+  PieceRenderer,
+  PieceRendererFunction,
+  CustomPieceSetRenderer,
+  PieceSetConfig,
+} from './types/pieceRenderer';
 
 // Export utilities
 export * from './utils';
+
+// Export constants
+export * from './constants';
+
+// Export piece renderer API
+export {
+  registerCustomPieceSet,
+  getAvailablePieceSets,
+} from './utils/pieceRendererRegistry';
 
 // Export components
 export { Piece } from './components/Piece';

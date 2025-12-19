@@ -1,9 +1,9 @@
 import React from 'react';
-import { Text, StyleSheet, View, type StyleProp, type ViewStyle } from 'react-native';
+import { View, type StyleProp, type ViewStyle } from 'react-native';
 import type { PieceSymbol, PieceSet } from '../types';
-import { PIECE_UNICODE } from '../utils/constants';
-import { renderCburnettPiece } from '../assets/pieces/cburnett';
-import { renderAlphaPiece } from '../assets/pieces/alpha';
+import { usePieceRenderer } from '../hooks/usePieceRenderer';
+import { UnicodePiece } from './pieces/UnicodePiece';
+import '../pieceRenderers'; // Initialize built-in piece renderers
 
 interface PieceProps {
   /** The piece to render */
@@ -12,12 +12,13 @@ interface PieceProps {
   size?: number;
   /** Custom style */
   style?: StyleProp<ViewStyle>;
-  /** Piece set style to use */
-  pieceSet?: PieceSet;
+  /** Piece set style to use (built-in or custom registered) */
+  pieceSet?: PieceSet | string;
 }
 
 /**
- * Renders a chess piece using either Unicode symbols or SVG graphics
+ * Renders a chess piece using registered renderers
+ * Supports built-in piece sets (unicode, cburnett, alpha) and custom registered sets
  */
 export const Piece: React.FC<PieceProps> = ({
   piece,
@@ -25,76 +26,13 @@ export const Piece: React.FC<PieceProps> = ({
   style,
   pieceSet = 'cburnett',
 }) => {
-  // Unicode rendering
-  if (pieceSet === 'unicode') {
-    return (
-      <Text
-        style={[
-          styles.piece,
-          {
-            fontSize: size,
-            lineHeight: size * 1.2,
-          },
-          style,
-        ]}
-      >
-        {PIECE_UNICODE[piece]}
-      </Text>
-    );
+  const { renderer, isRegistered } = usePieceRenderer(pieceSet);
+
+  // Use registered renderer if available
+  if (isRegistered && renderer) {
+    return <View style={style}>{renderer.render(piece, size)}</View>;
   }
 
-  // SVG rendering for different piece sets
-  if (pieceSet === 'cburnett') {
-    return (
-      <View style={[styles.svgContainer, style]}>
-        {renderCburnettPiece(piece, size)}
-      </View>
-    );
-  }
-
-  if (pieceSet === 'alpha') {
-    return (
-      <View style={[styles.svgContainer, style]}>
-        {renderAlphaPiece(piece, size)}
-      </View>
-    );
-  }
-
-  // Fallback to unicode if unknown piece set
-  return (
-    <Text
-      style={[
-        styles.piece,
-        {
-          fontSize: size,
-          lineHeight: size * 1.2,
-        },
-        style,
-      ]}
-    >
-      {PIECE_UNICODE[piece]}
-    </Text>
-  );
+  // Fallback to unicode if piece set not found
+  return <UnicodePiece piece={piece} size={size} style={style} />;
 };
-
-const styles = StyleSheet.create({
-  piece: {
-    textAlign: 'center',
-    userSelect: 'none',
-  },
-  svgContainer: {
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  placeholder: {
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#f0f0f0',
-    borderRadius: 4,
-  },
-  placeholderText: {
-    fontSize: 12,
-    fontWeight: 'bold',
-    color: '#333',
-  },
-});
