@@ -179,6 +179,43 @@ export interface TurnTogglerProps {
 }
 
 /**
+ * Props for EditorToolsPanel component
+ */
+export interface EditorToolsPanelProps {
+  /** Panel title */
+  title?: string;
+  /** Whether the panel starts expanded */
+  initialExpanded?: boolean;
+  /** Render function for panel content */
+  renderContent?: () => React.ReactNode;
+  /** Container style */
+  containerStyle?: StyleProp<ViewStyle>;
+  /** Header style */
+  headerStyle?: StyleProp<ViewStyle>;
+  /** Content style */
+  contentStyle?: StyleProp<ViewStyle>;
+}
+
+/**
+ * Default editor tools passed to renderEditorTools
+ */
+export interface DefaultEditorTools {
+  turnToggler: React.ReactNode;
+  castlingRights: React.ReactNode;
+  enPassantInput: React.ReactNode;
+}
+
+/**
+ * Editor tools layout - controls which tools appear in panel vs outside
+ */
+export interface EditorToolsLayout {
+  /** Content to render inside the collapsible panel */
+  inPanel: React.ReactNode;
+  /** Content to render outside the panel (between panel and FEN display) */
+  outside?: React.ReactNode;
+}
+
+/**
  * UI configuration for BoardEditor
  */
 export interface BoardEditorUIConfig {
@@ -198,6 +235,10 @@ export interface BoardEditorUIConfig {
   showPieceBank?: boolean;
   /** Board orientation */
   flipped?: boolean;
+  /** Whether to show editor tools panel */
+  showEditorToolsPanel?: boolean;
+  /** Initial expanded state for editor tools panel */
+  editorToolsPanelExpanded?: boolean;
 }
 
 /**
@@ -218,4 +259,6 @@ export interface BoardEditorProps {
   lightSquareColor?: string;
   /** Dark square color */
   darkSquareColor?: string;
+  /** Custom render function for editor tools - return object with 'inPanel' and 'outside' content */
+  renderEditorTools?: (defaultTools: DefaultEditorTools) => EditorToolsLayout;
 }

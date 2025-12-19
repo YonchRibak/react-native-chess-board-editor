@@ -12,4 +12,5 @@ export { FenDisplay } from './components/FenDisplay';
 export { CastlingRightsTogglers } from './components/CastlingRightsTogglers';
 export { EnPassantInput } from './components/EnPassantInput';
 export { TurnToggler } from './components/TurnToggler';
+export { EditorToolsPanel } from './components/EditorToolsPanel';
 export { BoardEditor } from './components/BoardEditor';

@@ -1,12 +1,13 @@
 import React, { useState, useRef } from 'react';
 import { View, ScrollView, StyleSheet } from 'react-native';
-import type { BoardEditorProps, PieceSymbol } from '../types';
+import type { BoardEditorProps, PieceSymbol, DefaultEditorTools, EditorToolsLayout } from '../types';
 import { EditableBoard } from './EditableBoard';
 import { PieceBank } from './PieceBank';
 import { FenDisplay } from './FenDisplay';
 import { CastlingRightsTogglers } from './CastlingRightsTogglers';
 import { EnPassantInput } from './EnPassantInput';
 import { TurnToggler } from './TurnToggler';
+import { EditorToolsPanel } from './EditorToolsPanel';
 import {
   DEFAULT_FEN,
   DEFAULT_SQUARE_SIZE,
@@ -31,6 +32,7 @@ export const BoardEditor: React.FC<BoardEditorProps> = ({
   squareSize = DEFAULT_SQUARE_SIZE,
   lightSquareColor,
   darkSquareColor,
+  renderEditorTools,
 }) => {
   const [fen, setFen] = useState(initialFen);
   const boardRef = useRef<View>(null);
@@ -45,6 +47,8 @@ export const BoardEditor: React.FC<BoardEditorProps> = ({
     showTurnToggler = true,
     showPieceBank = true,
     flipped = false,
+    showEditorToolsPanel = true,
+    editorToolsPanelExpanded = false,
   } = uiConfig;
 
   const components = parseFen(fen);
@@ -113,6 +117,58 @@ export const BoardEditor: React.FC<BoardEditorProps> = ({
     });
   };
 
+  // Build default editor tools
+  const getDefaultEditorTools = (): DefaultEditorTools => {
+    return {
+      turnToggler: showTurnToggler ? (
+        <View style={styles.toolSection} key="turn-toggler">
+          <TurnToggler
+            turn={components.activeColor}
+            onTurnChange={handleTurnChange}
+          />
+        </View>
+      ) : null,
+      castlingRights: showCastlingRights ? (
+        <View style={styles.toolSection} key="castling-rights">
+          <CastlingRightsTogglers
+            castlingRights={components.castlingAvailability}
+            onCastlingChange={handleCastlingChange}
+          />
+        </View>
+      ) : null,
+      enPassantInput: showEnPassantInput ? (
+        <View style={styles.toolSection} key="enpassant-input">
+          <EnPassantInput
+            enPassantSquare={components.enPassantTarget}
+            onEnPassantChange={handleEnPassantChange}
+            fen={fen}
+          />
+        </View>
+      ) : null,
+    };
+  };
+
+  // Get editor tools layout
+  const getEditorToolsLayout = (): EditorToolsLayout => {
+    const defaultTools = getDefaultEditorTools();
+
+    if (renderEditorTools) {
+      // Developer provided custom render function
+      return renderEditorTools(defaultTools);
+    }
+
+    // Default: all tools in panel, nothing outside
+    return {
+      inPanel: (
+        <>
+          {defaultTools.turnToggler}
+          {defaultTools.castlingRights}
+          {defaultTools.enPassantInput}
+        </>
+      ),
+    };
+  };
+
   return (
     <ScrollView
       style={[styles.container, containerStyle]}
@@ -172,39 +228,23 @@ export const BoardEditor: React.FC<BoardEditorProps> = ({
           </View>
         )}
 
-        {/* Controls Section */}
-        <View style={styles.controlsContainer}>
-          {/* Turn Toggler */}
-          {showTurnToggler && (
-            <View style={styles.section}>
-              <TurnToggler
-                turn={components.activeColor}
-                onTurnChange={handleTurnChange}
-              />
-            </View>
-          )}
+        {/* Editor Tools - Outside Panel (between FEN and panel) */}
+        {showEditorToolsPanel && getEditorToolsLayout().outside && (
+          <View style={styles.section}>
+            {getEditorToolsLayout().outside}
+          </View>
+        )}
 
-          {/* Castling Rights */}
-          {showCastlingRights && (
-            <View style={styles.section}>
-              <CastlingRightsTogglers
-                castlingRights={components.castlingAvailability}
-                onCastlingChange={handleCastlingChange}
-              />
-            </View>
-          )}
-
-          {/* En Passant Input */}
-          {showEnPassantInput && (
-            <View style={styles.section}>
-              <EnPassantInput
-                enPassantSquare={components.enPassantTarget}
-                onEnPassantChange={handleEnPassantChange}
-                fen={fen}
-              />
-            </View>
-          )}
-        </View>
+        {/* Editor Tools Panel */}
+        {showEditorToolsPanel && (
+          <View style={styles.section}>
+            <EditorToolsPanel
+              title="Editor Tools"
+              initialExpanded={editorToolsPanelExpanded}
+              renderContent={() => getEditorToolsLayout().inPanel}
+            />
+          </View>
+        )}
       </ScrollView>
   );
 };
@@ -225,8 +265,7 @@ const styles = StyleSheet.create({
     width: '100%',
     maxWidth: 400,
   },
-  controlsContainer: {
-    width: '100%',
-    maxWidth: 400,
+  toolSection: {
+    marginBottom: 8,
   },
 });
