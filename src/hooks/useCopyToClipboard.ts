@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useRef, useCallback } from 'react';
 import { Clipboard } from 'react-native';
 
 export interface UseCopyToClipboardReturn {
@@ -15,12 +15,26 @@ export const useCopyToClipboard = (
   timeout: number = 2000
 ): UseCopyToClipboardReturn => {
   const [copied, setCopied] = useState(false);
+  const timeoutRef = useRef<NodeJS.Timeout | null>(null);
 
-  const copyToClipboard = (text: string) => {
-    Clipboard.setString(text);
-    setCopied(true);
-    setTimeout(() => setCopied(false), timeout);
-  };
+  const copyToClipboard = useCallback(
+    (text: string) => {
+      // Clear any existing timeout
+      if (timeoutRef.current) {
+        clearTimeout(timeoutRef.current);
+      }
+
+      Clipboard.setString(text);
+      setCopied(true);
+
+      // Set new timeout
+      timeoutRef.current = setTimeout(() => {
+        setCopied(false);
+        timeoutRef.current = null;
+      }, timeout);
+    },
+    [timeout]
+  );
 
   return {
     copied,

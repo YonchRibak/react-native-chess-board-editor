@@ -273,10 +273,10 @@ describe('FEN En Passant', () => {
   });
 
   describe('en passant integration scenarios', () => {
-    it('should properly set up e3 en passant after e2-e4', () => {
-      // Simulate the move e2-e4 and set en passant
-      let fen = updatePieceAt(DEFAULT_FEN, 'e2', null);
-      fen = updatePieceAt(fen, 'e4', 'P');
+    it('should properly set up e3 en passant after black pawn e7-e5', () => {
+      // Simulate black pawn moving e7-e5 (so e3 en passant square, white to play)
+      let fen = updatePieceAt(DEFAULT_FEN, 'e7', null);
+      fen = updatePieceAt(fen, 'e5', 'p');
       fen = updateEnPassant(fen, 'e3');
 
       const components = parseFen(fen);
@@ -284,10 +284,10 @@ describe('FEN En Passant', () => {
       expect(components.activeColor).toBe('w');
     });
 
-    it('should properly set up e6 en passant after e7-e5', () => {
-      // Simulate the move e7-e5 and set en passant
-      let fen = updatePieceAt(DEFAULT_FEN, 'e7', null);
-      fen = updatePieceAt(fen, 'e5', 'p');
+    it('should properly set up e6 en passant after white pawn e2-e4', () => {
+      // Simulate white pawn moving e2-e4 (so e6 en passant square, black to play)
+      let fen = updatePieceAt(DEFAULT_FEN, 'e2', null);
+      fen = updatePieceAt(fen, 'e4', 'P');
       fen = updateEnPassant(fen, 'e6');
 
       const components = parseFen(fen);

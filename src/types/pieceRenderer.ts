@@ -1,4 +1,5 @@
 import type { ReactElement } from 'react';
+import type { StyleProp, ViewStyle } from 'react-native';
 import type { PieceSymbol } from './index';
 
 /**
@@ -6,7 +7,8 @@ import type { PieceSymbol } from './index';
  */
 export type PieceRendererFunction = (
   piece: PieceSymbol,
-  size: number
+  size: number,
+  style?: StyleProp<ViewStyle>
 ) => ReactElement;
 
 /**
@@ -24,7 +26,8 @@ export interface PieceRenderer {
  */
 export type CustomPieceSetRenderer = (
   piece: PieceSymbol,
-  size: number
+  size: number,
+  style?: StyleProp<ViewStyle>
 ) => ReactElement;
 
 /**

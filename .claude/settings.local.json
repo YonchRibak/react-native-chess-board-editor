@@ -7,7 +7,11 @@
       "Bash(fi)",
       "Bash(npm install:*)",
       "WebFetch(domain:raw.githubusercontent.com)",
-      "Bash(npm run typescript:*)"
+      "Bash(npm run typescript:*)",
+      "Bash(npm test:*)",
+      "Bash(find:*)",
+      "Bash(npx tsc:*)",
+      "Bash(npm run test:*)"
     ],
     "deny": [],
     "ask": []

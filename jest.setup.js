@@ -22,7 +22,15 @@ jest.mock('react-native-gesture-handler', () => {
 
 // Mock react-native-reanimated
 jest.mock('react-native-reanimated', () => {
+  const React = require('react');
   const View = require('react-native').View;
+
+  // Simple mutable shared value implementation for tests
+  class SharedValue {
+    constructor(initial) {
+      this.value = initial;
+    }
+  }
 
   const Reanimated = {
     default: {
@@ -38,7 +46,11 @@ jest.mock('react-native-reanimated', () => {
     Text: require('react-native').Text,
 
     // Hooks
-    useSharedValue: jest.fn((initial) => ({ value: initial })),
+    useSharedValue: (initial) => {
+      // Use React.useState to preserve the same SharedValue instance across renders
+      const [sharedValue] = React.useState(() => new SharedValue(initial));
+      return sharedValue;
+    },
     useAnimatedStyle: jest.fn((callback) => callback()),
     useAnimatedGestureHandler: jest.fn(() => ({})),
     useAnimatedScrollHandler: jest.fn(() => ({})),

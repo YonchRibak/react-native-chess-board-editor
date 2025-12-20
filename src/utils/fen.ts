@@ -414,8 +414,8 @@ export function getTurnFromEnPassant(enPassantSquare: string): PieceColor {
   }
 
   const rank = enPassantSquare[1];
-  // Rank 3 = black just moved, so white to play
-  // Rank 6 = white just moved, so black to play
+  // Rank 3 = black pawn just moved (e7→e5), so white to play
+  // Rank 6 = white pawn just moved (e2→e4), so black to play
   return rank === '3' ? 'w' : 'b';
 }
 

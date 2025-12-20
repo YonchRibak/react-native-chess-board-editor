@@ -14,23 +14,23 @@ import type { PieceSymbol } from '../types';
 // Register Unicode renderer
 pieceRendererRegistry.registerPieceSet('unicode', {
   type: 'unicode',
-  render: (piece: PieceSymbol, size: number) => (
-    <UnicodePiece piece={piece} size={size} />
+  render: (piece: PieceSymbol, size: number, style?) => (
+    <UnicodePiece piece={piece} size={size} style={style} />
   ),
 });
 
 // Register CBurnett SVG renderer
 pieceRendererRegistry.registerPieceSet('cburnett', {
   type: 'svg',
-  render: (piece: PieceSymbol, size: number) => (
-    <SvgPiece>{renderCburnettPiece(piece, size)}</SvgPiece>
+  render: (piece: PieceSymbol, size: number, style?) => (
+    <SvgPiece style={style}>{renderCburnettPiece(piece, size)}</SvgPiece>
   ),
 });
 
 // Register Alpha SVG renderer
 pieceRendererRegistry.registerPieceSet('alpha', {
   type: 'svg',
-  render: (piece: PieceSymbol, size: number) => (
-    <SvgPiece>{renderAlphaPiece(piece, size)}</SvgPiece>
+  render: (piece: PieceSymbol, size: number, style?) => (
+    <SvgPiece style={style}>{renderAlphaPiece(piece, size)}</SvgPiece>
   ),
 });

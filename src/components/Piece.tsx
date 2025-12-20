@@ -37,7 +37,7 @@ export const Piece: React.FC<PieceProps> = ({
 
   // Use registered renderer if available
   if (isRegistered && renderer) {
-    return <View style={style}>{renderer.render(piece, size)}</View>;
+    return renderer.render(piece, size, style);
   }
 
   // Fallback to unicode if piece set not found

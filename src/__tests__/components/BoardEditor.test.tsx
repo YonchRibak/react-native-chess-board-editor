@@ -10,6 +10,12 @@ describe('BoardEditor Component', () => {
     mockOnFenChange.mockClear();
   });
 
+  // Helper function to expand the editor tools panel
+  const expandEditorToolsPanel = (getByText: any) => {
+    const panelHeader = getByText('Editor Tools');
+    fireEvent.press(panelHeader);
+  };
+
   describe('rendering', () => {
     it('should render all components by default', () => {
       const { getByLabelText, getByText } = render(
@@ -22,6 +28,9 @@ describe('BoardEditor Component', () => {
 
       // FEN display
       expect(getByText('FEN:')).toBeTruthy();
+
+      // Expand the panel to access editor tools
+      expandEditorToolsPanel(getByText);
 
       // Turn toggler
       expect(getByLabelText('White to move')).toBeTruthy();
@@ -36,9 +45,12 @@ describe('BoardEditor Component', () => {
     it('should use initial FEN', () => {
       const customFen =
         'rnbqkbnr/pppppppp/8/8/4P3/8/PPPP1PPP/RNBQKBNR b KQkq e3 0 1';
-      const { getByLabelText } = render(
+      const { getByLabelText, getByText } = render(
         <BoardEditor initialFen={customFen} onFenChange={mockOnFenChange} />
       );
+
+      // Expand the panel to access editor tools
+      expandEditorToolsPanel(getByText);
 
       // Check that turn is black
       const blackToggle = getByLabelText('Black to move');
@@ -86,9 +98,11 @@ describe('BoardEditor Component', () => {
     });
 
     it('should update FEN when turn is changed', () => {
-      const { getByLabelText } = render(
+      const { getByLabelText, getByText } = render(
         <BoardEditor onFenChange={mockOnFenChange} />
       );
+
+      expandEditorToolsPanel(getByText);
 
       const blackToggle = getByLabelText('Black to move');
       fireEvent.press(blackToggle);
@@ -99,9 +113,11 @@ describe('BoardEditor Component', () => {
     });
 
     it('should update FEN when castling rights change', () => {
-      const { getByLabelText } = render(
+      const { getByLabelText, getByText } = render(
         <BoardEditor onFenChange={mockOnFenChange} />
       );
+
+      expandEditorToolsPanel(getByText);
 
       const whiteKingSide = getByLabelText('White can castle king-side');
       fireEvent.press(whiteKingSide);
@@ -113,12 +129,14 @@ describe('BoardEditor Component', () => {
 
     it('should update FEN when en passant changes', () => {
       // Position with pawns in correct positions for e3 en passant (black pawn on e4, white pawn on d4 or f4)
-      const { getByLabelText } = render(
+      const { getByLabelText, getByText } = render(
         <BoardEditor
           initialFen="rnbqkbnr/pppp1ppp/8/8/3Pp3/8/PPP1PPPP/RNBQKBNR w KQkq - 0 1"
           onFenChange={mockOnFenChange}
         />
       );
+
+      expandEditorToolsPanel(getByText);
 
       const input = getByLabelText('En passant target square');
       fireEvent.changeText(input, 'e3');
@@ -130,12 +148,14 @@ describe('BoardEditor Component', () => {
 
     it('should auto-update turn when en passant changes to rank 3', () => {
       // Position with pawns in correct positions for e3 en passant
-      const { getByLabelText } = render(
+      const { getByLabelText, getByText } = render(
         <BoardEditor
           initialFen="rnbqkbnr/pppp1ppp/8/8/3Pp3/8/PPP1PPPP/RNBQKBNR b KQkq - 0 1"
           onFenChange={mockOnFenChange}
         />
       );
+
+      expandEditorToolsPanel(getByText);
 
       const input = getByLabelText('En passant target square');
       fireEvent.changeText(input, 'e3');
@@ -148,12 +168,14 @@ describe('BoardEditor Component', () => {
 
     it('should auto-update turn when en passant changes to rank 6', () => {
       // Position with pawns in correct positions for e6 en passant (white pawn on e5, black pawn on d5 or f5)
-      const { getByLabelText } = render(
+      const { getByLabelText, getByText } = render(
         <BoardEditor
           initialFen="rnbqkbnr/pppp1ppp/8/3pP3/8/8/PPPP1PPP/RNBQKBNR w KQkq - 0 1"
           onFenChange={mockOnFenChange}
         />
       );
+
+      expandEditorToolsPanel(getByText);
 
       const input = getByLabelText('En passant target square');
       fireEvent.changeText(input, 'e6');
@@ -167,9 +189,11 @@ describe('BoardEditor Component', () => {
 
   describe('FEN synchronization', () => {
     it('should keep all components in sync', () => {
-      const { getByLabelText } = render(
+      const { getByLabelText, getByText } = render(
         <BoardEditor onFenChange={mockOnFenChange} />
       );
+
+      expandEditorToolsPanel(getByText);
 
       // Change turn to black
       const blackToggle = getByLabelText('Black to move');
@@ -188,12 +212,14 @@ describe('BoardEditor Component', () => {
 
     it('should handle multiple changes', () => {
       // Use a FEN with proper pawn positions for e6 en passant
-      const { getByLabelText } = render(
+      const { getByLabelText, getByText } = render(
         <BoardEditor
           initialFen="rnbqkbnr/pppp1ppp/8/3pP3/8/8/PPPP1PPP/RNBQKBNR w KQkq - 0 1"
           onFenChange={mockOnFenChange}
         />
       );
+
+      expandEditorToolsPanel(getByText);
 
       // Change castling rights
       const whiteKingSide = getByLabelText('White can castle king-side');
