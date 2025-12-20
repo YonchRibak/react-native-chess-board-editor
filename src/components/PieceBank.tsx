@@ -32,6 +32,7 @@ export const PieceBank: React.FC<PieceBankProps> = ({
     translateX,
     translateY,
     opacity,
+    scale,
     handleDragStart,
     handleDragUpdate,
     handleDragEnd,
@@ -76,6 +77,7 @@ export const PieceBank: React.FC<PieceBankProps> = ({
         translateX={translateX}
         translateY={translateY}
         opacity={opacity}
+        scale={scale}
         pieceStyle={pieceStyle}
       />
     </View>

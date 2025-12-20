@@ -64,7 +64,7 @@ describe('useBankDrag', () => {
       });
     });
 
-    it('should set opacity to 1', () => {
+    it('should set opacity to 0.5', () => {
       const { result } = renderHook(() =>
         useBankDrag({ pieceSize, bankLayout })
       );
@@ -73,7 +73,7 @@ describe('useBankDrag', () => {
         result.current.handleDragStart('P', 150, 250);
       });
 
-      expect(result.current.opacity.value).toBe(1);
+      expect(result.current.opacity.value).toBe(0.5);
     });
 
     it('should position floating piece correctly', () => {
@@ -192,7 +192,7 @@ describe('useBankDrag', () => {
       expect(mockOnPieceDropCoords).toHaveBeenCalledWith('P', 300, 400);
     });
 
-    it('should set opacity to 0', () => {
+    it('should animate opacity from 0.5 to 0', () => {
       const { result } = renderHook(() =>
         useBankDrag({ pieceSize, bankLayout })
       );
@@ -201,7 +201,7 @@ describe('useBankDrag', () => {
         result.current.handleDragStart('P', 150, 250);
       });
 
-      expect(result.current.opacity.value).toBe(1);
+      expect(result.current.opacity.value).toBe(0.5);
 
       act(() => {
         result.current.handleDragEnd(300, 400);
@@ -279,7 +279,7 @@ describe('useBankDrag', () => {
       });
 
       expect(result.current.dragging?.piece).toBe('N');
-      expect(result.current.opacity.value).toBe(1);
+      expect(result.current.opacity.value).toBe(0.5);
 
       // Update
       act(() => {

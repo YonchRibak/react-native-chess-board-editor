@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 import Animated, {
   useAnimatedStyle,
   SharedValue,
@@ -13,6 +13,7 @@ export interface FloatingPieceProps {
   translateX: SharedValue<number>;
   translateY: SharedValue<number>;
   opacity: SharedValue<number>;
+  scale: SharedValue<number>;
   pieceStyle?: any;
 }
 
@@ -27,6 +28,7 @@ export const FloatingPiece: React.FC<FloatingPieceProps> = ({
   translateX,
   translateY,
   opacity,
+  scale,
   pieceStyle,
 }) => {
   const animatedStyle = useAnimatedStyle(() => ({
@@ -34,6 +36,7 @@ export const FloatingPiece: React.FC<FloatingPieceProps> = ({
     transform: [
       { translateX: translateX.value },
       { translateY: translateY.value },
+      { scale: scale.value },
     ],
   }));
 
@@ -50,11 +53,23 @@ export const FloatingPiece: React.FC<FloatingPieceProps> = ({
       pointerEvents="none"
     >
       {piece && (
-        <Piece
-          piece={piece}
-          size={size}
-          style={pieceStyle}
-        />
+        <>
+          <View
+            style={[
+              styles.circleBackground,
+              {
+                width: size * 1.3,
+                height: size * 1.3,
+                borderRadius: (size * 1.3) / 2,
+              },
+            ]}
+          />
+          <Piece
+            piece={piece}
+            size={size}
+            style={pieceStyle}
+          />
+        </>
       )}
     </Animated.View>
   );
@@ -68,5 +83,10 @@ const styles = StyleSheet.create({
     zIndex: 1000,
     alignItems: 'center',
     justifyContent: 'center',
+  },
+  circleBackground: {
+    position: 'absolute',
+    backgroundColor: 'rgba(128, 128, 128, 0.5)',
+    zIndex: -1,
   },
 });

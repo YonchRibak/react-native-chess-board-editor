@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useSharedValue } from 'react-native-reanimated';
+import { useSharedValue, withSpring } from 'react-native-reanimated';
 import type { PieceSymbol } from '../types';
 import type { DraggingState, ComponentLayout } from '../types/bank';
 
@@ -22,6 +22,7 @@ export const useBankDrag = ({
   const translateX = useSharedValue(0);
   const translateY = useSharedValue(0);
   const opacity = useSharedValue(0);
+  const scale = useSharedValue(1);
 
   const handleDragStart = (piece: PieceSymbol, startX: number, startY: number) => {
     // Position floating piece centered on touch point
@@ -29,7 +30,9 @@ export const useBankDrag = ({
     const actualPieceSize = pieceSize * 0.8;
     translateX.value = startX - bankLayout.x - actualPieceSize / 2;
     translateY.value = startY - bankLayout.y - actualPieceSize / 2;
-    opacity.value = 1;
+    // Animate opacity to 50% and scale to 4x when drag starts
+    opacity.value = withSpring(0.5, { damping: 30, stiffness: 100 });
+    scale.value = withSpring(4, { damping: 30, stiffness: 100 });
 
     setDragging({ piece, startX, startY });
   };
@@ -45,14 +48,15 @@ export const useBankDrag = ({
   const handleDragEnd = (finalX: number, finalY: number) => {
     if (!dragging) return;
 
-    // Hide floating piece immediately
-    opacity.value = 0;
-
     // Call the drop callback with absolute screen coordinates
     onPieceDropCoords?.(dragging.piece, finalX, finalY);
 
-    // Reset dragging state
+    // Reset dragging state immediately so bank piece is fully visible
     setDragging(null);
+
+    // Animate scale back to 1 and fade out the floating piece
+    scale.value = withSpring(1, { damping: 30, stiffness: 100 });
+    opacity.value = withSpring(0, { damping: 30, stiffness: 100 });
   };
 
   return {
@@ -60,6 +64,7 @@ export const useBankDrag = ({
     translateX,
     translateY,
     opacity,
+    scale,
     handleDragStart,
     handleDragUpdate,
     handleDragEnd,

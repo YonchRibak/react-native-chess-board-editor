@@ -1,6 +1,6 @@
 import { useSharedValue } from 'react-native-reanimated';
 import { Gesture } from 'react-native-gesture-handler';
-import { runOnJS, withSpring, SharedValue } from 'react-native-reanimated';
+import { runOnJS, SharedValue } from 'react-native-reanimated';
 import type { PieceSymbol } from '../types';
 
 export interface UsePieceGestureParams {
@@ -8,6 +8,7 @@ export interface UsePieceGestureParams {
   row: number;
   col: number;
   squareSize: number;
+  pieceSize: number;
   onDragStart: (row: number, col: number, piece: PieceSymbol) => void;
   onDragEnd: (x: number, y: number) => void;
   translateX: SharedValue<number>;
@@ -23,6 +24,7 @@ export const usePieceGesture = ({
   row,
   col,
   squareSize,
+  pieceSize,
   onDragStart,
   onDragEnd,
   translateX,
@@ -41,16 +43,17 @@ export const usePieceGesture = ({
 
       startX.value = initialX;
       startY.value = initialY;
-      translateX.value = initialX - squareSize / 2;
-      translateY.value = initialY - squareSize / 2;
+      // Center floating piece on the touch point using actual piece size
+      translateX.value = initialX - pieceSize / 2;
+      translateY.value = initialY - pieceSize / 2;
 
       runOnJS(onDragStart)(row, col, piece);
     })
     .onUpdate((event) => {
       if (!piece) return;
-      // Center the floating piece on the touch point
-      translateX.value = startX.value + event.translationX - squareSize / 2;
-      translateY.value = startY.value + event.translationY - squareSize / 2;
+      // Center the floating piece on the touch point using actual piece size
+      translateX.value = startX.value + event.translationX - pieceSize / 2;
+      translateY.value = startY.value + event.translationY - pieceSize / 2;
     })
     .onEnd((event) => {
       if (!piece) return;
@@ -59,8 +62,8 @@ export const usePieceGesture = ({
 
       runOnJS(onDragEnd)(finalX, finalY);
 
-      translateX.value = withSpring(0);
-      translateY.value = withSpring(0);
+      // Don't reset position - let the floating piece fade out at its current location
+      // The useBoardDrag hook handles the fade-out animation
     });
 
   return panGesture;

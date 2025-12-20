@@ -73,8 +73,8 @@ export interface BoardDropTarget {
 /**
  * Calculate which board square a drag gesture ended on
  * Used for piece drag-and-drop within the board
- * @param absoluteX - Absolute X coordinate (center of dragged piece)
- * @param absoluteY - Absolute Y coordinate (center of dragged piece)
+ * @param absoluteX - X coordinate of the center of the dragged piece
+ * @param absoluteY - Y coordinate of the center of the dragged piece
  * @param squareSize - Size of each square in pixels
  * @returns The row and col coordinates, or null if outside board bounds
  */
@@ -83,9 +83,9 @@ export const calculateBoardDropTarget = (
   absoluteY: number,
   squareSize: number
 ): BoardDropTarget | null => {
-  // Center the calculation on the piece's center point
-  const col = Math.floor((absoluteX + squareSize / 2) / squareSize);
-  const row = Math.floor((absoluteY + squareSize / 2) / squareSize);
+  // Since absoluteX and absoluteY are center coordinates, just divide by square size
+  const col = Math.floor(absoluteX / squareSize);
+  const row = Math.floor(absoluteY / squareSize);
 
   // Check if dropped within board bounds
   if (row >= 0 && row < 8 && col >= 0 && col < 8) {

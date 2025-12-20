@@ -152,23 +152,23 @@ describe('boardCoordinates', () => {
     const squareSize = 50;
 
     describe('basic drop target calculations', () => {
-      it('should calculate drop target for top-left square (0,0)', () => {
-        const result = calculateBoardDropTarget(-25, -25, squareSize);
+      it('should calculate drop target for top-left square center (0,0)', () => {
+        const result = calculateBoardDropTarget(25, 25, squareSize);
         expect(result).toEqual({ row: 0, col: 0 });
       });
 
-      it('should calculate drop target for center of first square', () => {
+      it('should calculate drop target for top edge of first square', () => {
         const result = calculateBoardDropTarget(0, 0, squareSize);
         expect(result).toEqual({ row: 0, col: 0 });
       });
 
-      it('should calculate drop target for middle square (e4 = row 4, col 4)', () => {
-        const result = calculateBoardDropTarget(175, 175, squareSize);
-        expect(result).toEqual({ row: 4, col: 4 });
+      it('should calculate drop target for middle square center (e4 = row 3, col 4)', () => {
+        const result = calculateBoardDropTarget(225, 175, squareSize);
+        expect(result).toEqual({ row: 3, col: 4 });
       });
 
-      it('should calculate drop target for bottom-right square (h1 = row 7, col 7)', () => {
-        const result = calculateBoardDropTarget(325, 325, squareSize);
+      it('should calculate drop target for bottom-right square center (h1 = row 7, col 7)', () => {
+        const result = calculateBoardDropTarget(375, 375, squareSize);
         expect(result).toEqual({ row: 7, col: 7 });
       });
 
@@ -217,29 +217,31 @@ describe('boardCoordinates', () => {
 
     describe('different square sizes', () => {
       it('should work with larger square size', () => {
+        // 350 / 100 = 3.5, floor = 3 (center of 4th square, 0-indexed)
         const result = calculateBoardDropTarget(350, 350, 100);
-        expect(result).toEqual({ row: 4, col: 4 });
+        expect(result).toEqual({ row: 3, col: 3 });
       });
 
       it('should work with smaller square size', () => {
+        // 70 / 20 = 3.5, floor = 3 (center of 4th square, 0-indexed)
         const result = calculateBoardDropTarget(70, 70, 20);
-        expect(result).toEqual({ row: 4, col: 4 });
+        expect(result).toEqual({ row: 3, col: 3 });
       });
     });
 
-    describe('piece center offset handling', () => {
-      it('should account for piece center when near square edge', () => {
-        // Dropping at x=24 (just before boundary at 25)
-        // With offset: (24 + 25) = 49, which is still in first column
-        const result = calculateBoardDropTarget(24, 24, squareSize);
+    describe('coordinate precision', () => {
+      it('should correctly calculate for coordinates just before boundary', () => {
+        // Dropping at x=49, y=49 (just before boundary at 50)
+        // floor(49 / 50) = 0, which is still in first square
+        const result = calculateBoardDropTarget(49, 49, squareSize);
         expect(result).toEqual({ row: 0, col: 0 });
       });
 
-      it('should account for piece center when crossing boundary', () => {
-        // Dropping at x=25 (exactly at boundary)
-        // With offset: (25 + 25) = 50, which moves to next column
+      it('should correctly calculate for coordinates exactly at square center', () => {
+        // Dropping at x=25, y=25 (center of first square)
+        // floor(25 / 50) = 0
         const result = calculateBoardDropTarget(25, 25, squareSize);
-        expect(result).toEqual({ row: 1, col: 1 });
+        expect(result).toEqual({ row: 0, col: 0 });
       });
     });
   });

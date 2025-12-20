@@ -7,7 +7,12 @@ describe('useBoardDrag', () => {
   const squareSize = 50;
 
   beforeEach(() => {
+    jest.useFakeTimers();
     mockOnFenChange.mockClear();
+  });
+
+  afterEach(() => {
+    jest.useRealTimers();
   });
 
   describe('initialization', () => {
@@ -131,8 +136,15 @@ describe('useBoardDrag', () => {
       });
 
       expect(mockOnFenChange).toHaveBeenCalled();
+
+      // Advance timers to complete the fade-out animation
+      act(() => {
+        jest.advanceTimersByTime(300);
+      });
+
       expect(result.current.draggingPiece).toBe(null);
-      expect(result.current.isDragging.value).toBe(false);
+      // Note: isDragging.value is set to false in the animation callback
+      // which runs when the spring animation completes, not at a fixed time
     });
 
     it('should remove piece when dropped outside board', () => {
@@ -151,6 +163,12 @@ describe('useBoardDrag', () => {
       });
 
       expect(mockOnFenChange).toHaveBeenCalled();
+
+      // Advance timers to complete the fade-out animation
+      act(() => {
+        jest.advanceTimersByTime(300);
+      });
+
       expect(result.current.draggingPiece).toBe(null);
     });
 
@@ -173,6 +191,12 @@ describe('useBoardDrag', () => {
       });
 
       expect(mockOnFenChange).toHaveBeenCalled();
+
+      // Advance timers to complete the fade-out animation
+      act(() => {
+        jest.advanceTimersByTime(300);
+      });
+
       expect(result.current.draggingPiece).toBe(null);
     });
 
@@ -205,6 +229,11 @@ describe('useBoardDrag', () => {
         result.current.handleDragEnd(100, 100);
       });
 
+      // Advance timers to complete the fade-out animation
+      act(() => {
+        jest.advanceTimersByTime(300);
+      });
+
       expect(result.current.draggingPiece).toBe(null);
     });
   });
@@ -231,8 +260,14 @@ describe('useBoardDrag', () => {
         result.current.handleDragEnd(targetX, targetY);
       });
 
-      expect(result.current.draggingPiece).toBe(null);
       expect(mockOnFenChange).toHaveBeenCalled();
+
+      // Advance timers to complete the fade-out animation
+      act(() => {
+        jest.advanceTimersByTime(300);
+      });
+
+      expect(result.current.draggingPiece).toBe(null);
     });
 
     it('should handle multiple sequential drags', () => {
@@ -249,6 +284,11 @@ describe('useBoardDrag', () => {
         result.current.handleDragEnd(200, 200);
       });
 
+      // Advance timers to complete the fade-out animation
+      act(() => {
+        jest.advanceTimersByTime(300);
+      });
+
       expect(result.current.draggingPiece).toBe(null);
 
       // Second drag
@@ -260,6 +300,11 @@ describe('useBoardDrag', () => {
 
       act(() => {
         result.current.handleDragEnd(150, 150);
+      });
+
+      // Advance timers to complete the fade-out animation
+      act(() => {
+        jest.advanceTimersByTime(300);
       });
 
       expect(result.current.draggingPiece).toBe(null);
@@ -348,6 +393,12 @@ describe('useBoardDrag', () => {
       });
 
       expect(mockOnFenChange).toHaveBeenCalled();
+
+      // Advance timers to complete the fade-out animation
+      act(() => {
+        jest.advanceTimersByTime(300);
+      });
+
       expect(result.current.draggingPiece).toBe(null);
     });
 
@@ -365,6 +416,12 @@ describe('useBoardDrag', () => {
       });
 
       expect(mockOnFenChange).toHaveBeenCalled();
+
+      // Advance timers to complete the fade-out animation
+      act(() => {
+        jest.advanceTimersByTime(300);
+      });
+
       expect(result.current.draggingPiece).toBe(null);
     });
   });

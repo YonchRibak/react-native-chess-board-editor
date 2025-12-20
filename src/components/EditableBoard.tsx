@@ -1,10 +1,9 @@
 import React from 'react';
 import { View, StyleSheet } from 'react-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
-import Animated, { useAnimatedStyle } from 'react-native-reanimated';
 import type { EditableBoardProps } from '../types';
-import { Piece } from './Piece';
 import { BoardRank } from './BoardRank';
+import { FloatingPiece } from './FloatingPiece';
 import { parseFen, fenToBoardState } from '../utils/fen';
 import { useBoardDrag } from '../hooks/useBoardDrag';
 import { useBoardTheme } from '../contexts/BoardThemeContext';
@@ -30,12 +29,17 @@ export const EditableBoard: React.FC<EditableBoardProps> = ({
     translateX,
     translateY,
     isDragging,
+    scale,
+    opacity,
     handleDragStart,
     handleDragEnd,
   } = useBoardDrag(fen, onFenChange, squareSize);
 
   const components = parseFen(fen);
   const board = fenToBoardState(components.piecePlacement);
+
+  // Match bank piece size calculation
+  const floatingPieceSize = squareSize * 0.7 * 0.8;
 
   return (
     <GestureHandlerRootView style={[styles.container, boardStyle]}>
@@ -55,32 +59,16 @@ export const EditableBoard: React.FC<EditableBoardProps> = ({
           />
         ))}
       </View>
-      {/* Always render floating piece container to keep hook count constant */}
-      <Animated.View
-        style={[
-          styles.draggingPiece,
-          {
-            width: squareSize,
-            height: squareSize,
-          },
-          useAnimatedStyle(() => ({
-            opacity: isDragging.value ? 1 : 0,
-            transform: [
-              { translateX: translateX.value },
-              { translateY: translateY.value },
-            ],
-          })),
-        ]}
-        pointerEvents="none"
-      >
-        {draggingPiece && (
-          <Piece
-            piece={draggingPiece.piece}
-            size={squareSize * 0.85}
-            style={pieceStyle}
-          />
-        )}
-      </Animated.View>
+      {/* Floating piece for drag feedback */}
+      <FloatingPiece
+        piece={draggingPiece?.piece ?? null}
+        size={floatingPieceSize}
+        translateX={translateX}
+        translateY={translateY}
+        opacity={opacity}
+        scale={scale}
+        pieceStyle={pieceStyle}
+      />
     </GestureHandlerRootView>
   );
 };
@@ -95,13 +83,5 @@ const styles = StyleSheet.create({
     borderColor: '#333',
     borderRadius: 4,
     overflow: 'hidden',
-  },
-  draggingPiece: {
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    zIndex: 1000,
-    alignItems: 'center',
-    justifyContent: 'center',
   },
 });

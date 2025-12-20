@@ -37,11 +37,15 @@ export const DraggablePiece: React.FC<DraggablePieceProps> = ({
   // Get theme from context
   const { squareSize } = useBoardTheme();
 
+  // Match bank piece size calculation
+  const floatingPieceSize = squareSize * 0.7 * 0.8;
+
   const panGesture = usePieceGesture({
     piece,
     row,
     col,
     squareSize,
+    pieceSize: floatingPieceSize,
     onDragStart,
     onDragEnd,
     translateX,
