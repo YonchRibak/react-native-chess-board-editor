@@ -1,16 +1,14 @@
 import React from 'react';
 import { View, StyleSheet } from 'react-native';
 import type { SharedValue } from 'react-native-reanimated';
-import type { PieceSymbol, PieceSet } from '../types';
+import type { PieceSymbol } from '../types';
 import { BoardSquare } from './BoardSquare';
 import type { DraggingPiece } from '../hooks/useBoardDrag';
+import { useBoardTheme } from '../contexts/BoardThemeContext';
 
 export interface BoardRankProps {
   rankIndex: number;
   board: (PieceSymbol | null)[][];
-  squareSize: number;
-  lightSquareColor: string;
-  darkSquareColor: string;
   flipped: boolean;
   draggingPiece: DraggingPiece | null;
   onDragStart: (row: number, col: number, piece: PieceSymbol) => void;
@@ -18,7 +16,6 @@ export interface BoardRankProps {
   pieceStyle?: any;
   translateX: SharedValue<number>;
   translateY: SharedValue<number>;
-  pieceSet?: PieceSet | string;
 }
 
 /**
@@ -28,9 +25,6 @@ export interface BoardRankProps {
 export const BoardRank: React.FC<BoardRankProps> = ({
   rankIndex,
   board,
-  squareSize,
-  lightSquareColor,
-  darkSquareColor,
   flipped,
   draggingPiece,
   onDragStart,
@@ -38,8 +32,9 @@ export const BoardRank: React.FC<BoardRankProps> = ({
   pieceStyle,
   translateX,
   translateY,
-  pieceSet,
 }) => {
+  // Get theme from context
+  const { squareSize, lightSquareColor, darkSquareColor } = useBoardTheme();
   const renderSquare = (colIndex: number) => {
     const displayRow = flipped ? 7 - rankIndex : rankIndex;
     const displayCol = flipped ? 7 - colIndex : colIndex;
@@ -60,16 +55,12 @@ export const BoardRank: React.FC<BoardRankProps> = ({
         displayRow={displayRow}
         displayCol={displayCol}
         piece={piece}
-        squareSize={squareSize}
-        lightSquareColor={lightSquareColor}
-        darkSquareColor={darkSquareColor}
         isBeingDragged={isBeingDragged}
         onDragStart={onDragStart}
         onDragEnd={onDragEnd}
         pieceStyle={pieceStyle}
         translateX={translateX}
         translateY={translateY}
-        pieceSet={pieceSet}
       />
     );
   };

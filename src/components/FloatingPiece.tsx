@@ -4,7 +4,7 @@ import Animated, {
   useAnimatedStyle,
   SharedValue,
 } from 'react-native-reanimated';
-import type { PieceSymbol, PieceSet } from '../types';
+import type { PieceSymbol } from '../types';
 import { Piece } from './Piece';
 
 export interface FloatingPieceProps {
@@ -14,7 +14,6 @@ export interface FloatingPieceProps {
   translateY: SharedValue<number>;
   opacity: SharedValue<number>;
   pieceStyle?: any;
-  pieceSet?: PieceSet | string;
 }
 
 /**
@@ -29,7 +28,6 @@ export const FloatingPiece: React.FC<FloatingPieceProps> = ({
   translateY,
   opacity,
   pieceStyle,
-  pieceSet,
 }) => {
   const animatedStyle = useAnimatedStyle(() => ({
     opacity: opacity.value,
@@ -56,7 +54,6 @@ export const FloatingPiece: React.FC<FloatingPieceProps> = ({
           piece={piece}
           size={size}
           style={pieceStyle}
-          pieceSet={pieceSet}
         />
       )}
     </Animated.View>

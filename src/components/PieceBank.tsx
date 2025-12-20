@@ -1,12 +1,12 @@
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import type { PieceBankProps } from '../types';
-import { DEFAULT_SQUARE_SIZE } from '../constants';
 import { getPiecesByColor, getBankLabel } from '../utils/pieceFilters';
 import { useComponentLayout } from '../hooks/useComponentLayout';
 import { useBankDrag } from '../hooks/useBankDrag';
 import { DraggableBankPiece } from './DraggableBankPiece';
 import { FloatingPiece } from './FloatingPiece';
+import { useBoardTheme } from '../contexts/BoardThemeContext';
 
 /**
  * PieceBank Component
@@ -17,12 +17,14 @@ export const PieceBank: React.FC<PieceBankProps> = ({
   layout = 'horizontal',
   bankStyle,
   pieceStyle,
-  pieceSize = DEFAULT_SQUARE_SIZE,
   color,
   showLabel = true,
   onPieceDropCoords,
-  pieceSet = 'cburnett',
 }) => {
+  // Get theme from context
+  const { squareSize } = useBoardTheme();
+  const pieceSize = squareSize * 0.7;
+
   const { ref, layout: bankLayout, handleLayout } = useComponentLayout();
 
   const {
@@ -59,13 +61,11 @@ export const PieceBank: React.FC<PieceBankProps> = ({
           <DraggableBankPiece
             key={piece}
             piece={piece}
-            pieceSize={pieceSize}
             pieceStyle={pieceStyle}
             onDragStart={handleDragStart}
             onDragUpdate={handleDragUpdate}
             onDragEnd={handleDragEnd}
             isDragging={dragging?.piece === piece}
-            pieceSet={pieceSet}
           />
         ))}
       </View>
@@ -77,7 +77,6 @@ export const PieceBank: React.FC<PieceBankProps> = ({
         translateY={translateY}
         opacity={opacity}
         pieceStyle={pieceStyle}
-        pieceSet={pieceSet}
       />
     </View>
   );

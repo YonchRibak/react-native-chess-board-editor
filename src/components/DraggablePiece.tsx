@@ -2,22 +2,21 @@ import React from 'react';
 import { StyleSheet } from 'react-native';
 import { GestureDetector } from 'react-native-gesture-handler';
 import Animated, { SharedValue } from 'react-native-reanimated';
-import type { PieceSymbol, PieceSet } from '../types';
+import type { PieceSymbol } from '../types';
 import { Piece } from './Piece';
 import { usePieceGesture } from '../hooks/usePieceGesture';
+import { useBoardTheme } from '../contexts/BoardThemeContext';
 
 export interface DraggablePieceProps {
   piece: PieceSymbol | null;
   row: number;
   col: number;
-  squareSize: number;
   onDragStart: (row: number, col: number, piece: PieceSymbol) => void;
   onDragEnd: (x: number, y: number) => void;
   pieceStyle?: any;
   translateX: SharedValue<number>;
   translateY: SharedValue<number>;
   isBeingDragged: boolean;
-  pieceSet?: PieceSet | string;
 }
 
 /**
@@ -28,15 +27,16 @@ export const DraggablePiece: React.FC<DraggablePieceProps> = ({
   piece,
   row,
   col,
-  squareSize,
   onDragStart,
   onDragEnd,
   pieceStyle,
   translateX,
   translateY,
   isBeingDragged,
-  pieceSet,
 }) => {
+  // Get theme from context
+  const { squareSize } = useBoardTheme();
+
   const panGesture = usePieceGesture({
     piece,
     row,
@@ -57,7 +57,7 @@ export const DraggablePiece: React.FC<DraggablePieceProps> = ({
         ]}
       >
         {piece && (
-          <Piece piece={piece} size={squareSize * 0.85} style={pieceStyle} pieceSet={pieceSet} />
+          <Piece piece={piece} size={squareSize * 0.85} style={pieceStyle} />
         )}
       </Animated.View>
     </GestureDetector>

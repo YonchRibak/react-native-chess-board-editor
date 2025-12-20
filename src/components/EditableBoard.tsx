@@ -6,12 +6,8 @@ import type { EditableBoardProps } from '../types';
 import { Piece } from './Piece';
 import { BoardRank } from './BoardRank';
 import { parseFen, fenToBoardState } from '../utils/fen';
-import {
-  DEFAULT_SQUARE_SIZE,
-  DEFAULT_LIGHT_SQUARE_COLOR,
-  DEFAULT_DARK_SQUARE_COLOR,
-} from '../constants';
 import { useBoardDrag } from '../hooks/useBoardDrag';
+import { useBoardTheme } from '../contexts/BoardThemeContext';
 
 /**
  * EditableBoard Component
@@ -21,14 +17,13 @@ import { useBoardDrag } from '../hooks/useBoardDrag';
 export const EditableBoard: React.FC<EditableBoardProps> = ({
   fen,
   onFenChange,
-  squareSize = DEFAULT_SQUARE_SIZE,
-  lightSquareColor = DEFAULT_LIGHT_SQUARE_COLOR,
-  darkSquareColor = DEFAULT_DARK_SQUARE_COLOR,
   pieceStyle,
   boardStyle,
   flipped = false,
-  pieceSet = 'cburnett',
 }) => {
+  // Get theme from context
+  const { squareSize, lightSquareColor, darkSquareColor, pieceSet } = useBoardTheme();
+
   // Use drag state hook
   const {
     draggingPiece,
@@ -50,9 +45,6 @@ export const EditableBoard: React.FC<EditableBoardProps> = ({
             key={rankIndex}
             rankIndex={rankIndex}
             board={board}
-            squareSize={squareSize}
-            lightSquareColor={lightSquareColor}
-            darkSquareColor={darkSquareColor}
             flipped={flipped}
             draggingPiece={draggingPiece}
             onDragStart={handleDragStart}
@@ -60,7 +52,6 @@ export const EditableBoard: React.FC<EditableBoardProps> = ({
             pieceStyle={pieceStyle}
             translateX={translateX}
             translateY={translateY}
-            pieceSet={pieceSet}
           />
         ))}
       </View>
@@ -87,7 +78,6 @@ export const EditableBoard: React.FC<EditableBoardProps> = ({
             piece={draggingPiece.piece}
             size={squareSize * 0.85}
             style={pieceStyle}
-            pieceSet={pieceSet}
           />
         )}
       </Animated.View>

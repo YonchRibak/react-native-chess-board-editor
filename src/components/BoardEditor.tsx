@@ -6,12 +6,13 @@ import { PieceBank } from './PieceBank';
 import { FenDisplay } from './FenDisplay';
 import { EditorToolsPanel } from './EditorToolsPanel';
 import { DEFAULT_FEN } from '../utils';
-import { DEFAULT_SQUARE_SIZE, DEFAULT_PIECE_SET } from '../constants';
+import { DEFAULT_SQUARE_SIZE, DEFAULT_PIECE_SET, DEFAULT_LIGHT_SQUARE_COLOR, DEFAULT_DARK_SQUARE_COLOR } from '../constants';
 import { useFenState } from '../hooks/useFenState';
 import { useBoardLayout } from '../hooks/useBoardLayout';
 import { usePieceSet } from '../hooks/usePieceSet';
 import { calculateDropSquare } from '../utils/boardCoordinates';
 import { buildEditorToolsLayout } from '../utils/editorToolsBuilder';
+import { BoardThemeProvider } from '../contexts/BoardThemeContext';
 
 /**
  * BoardEditor Component
@@ -84,8 +85,17 @@ export const BoardEditor: React.FC<BoardEditorProps> = ({
     renderEditorTools,
   });
 
+  // Create theme object for context
+  const theme = {
+    pieceSet,
+    squareSize,
+    lightSquareColor: lightSquareColor || DEFAULT_LIGHT_SQUARE_COLOR,
+    darkSquareColor: darkSquareColor || DEFAULT_DARK_SQUARE_COLOR,
+  };
+
   return (
-    <ScrollView
+    <BoardThemeProvider theme={theme}>
+      <ScrollView
       style={[styles.container, containerStyle]}
       contentContainerStyle={styles.contentContainer}
       showsVerticalScrollIndicator={false}
@@ -95,11 +105,9 @@ export const BoardEditor: React.FC<BoardEditorProps> = ({
           <View style={styles.section}>
             <PieceBank
               layout={bankLayout}
-              pieceSize={squareSize * 0.7}
               color="black"
               showLabel={true}
               onPieceDropCoords={handlePieceDropFromBank}
-              pieceSet={pieceSet}
             />
           </View>
         )}
@@ -113,11 +121,7 @@ export const BoardEditor: React.FC<BoardEditorProps> = ({
           <EditableBoard
             fen={fen}
             onFenChange={handleFenChange}
-            squareSize={squareSize}
-            lightSquareColor={lightSquareColor}
-            darkSquareColor={darkSquareColor}
             flipped={flipped}
-            pieceSet={pieceSet}
           />
         </View>
 
@@ -126,11 +130,9 @@ export const BoardEditor: React.FC<BoardEditorProps> = ({
           <View style={styles.section}>
             <PieceBank
               layout={bankLayout}
-              pieceSize={squareSize * 0.7}
               color="white"
               showLabel={true}
               onPieceDropCoords={handlePieceDropFromBank}
-              pieceSet={pieceSet}
             />
           </View>
         )}
@@ -164,6 +166,7 @@ export const BoardEditor: React.FC<BoardEditorProps> = ({
           </View>
         )}
       </ScrollView>
+    </BoardThemeProvider>
   );
 };
 

@@ -2,19 +2,18 @@ import React from 'react';
 import { View, StyleSheet } from 'react-native';
 import { GestureDetector } from 'react-native-gesture-handler';
 import Animated from 'react-native-reanimated';
-import type { PieceSymbol, PieceSet } from '../types';
+import type { PieceSymbol } from '../types';
 import { Piece } from './Piece';
 import { useBankPieceGesture } from '../hooks/useBankPieceGesture';
+import { useBoardTheme } from '../contexts/BoardThemeContext';
 
 export interface DraggableBankPieceProps {
   piece: PieceSymbol;
-  pieceSize: number;
   pieceStyle?: any;
   onDragStart: (piece: PieceSymbol, x: number, y: number) => void;
   onDragUpdate: (x: number, y: number) => void;
   onDragEnd: (x: number, y: number) => void;
   isDragging: boolean;
-  pieceSet?: PieceSet | string;
 }
 
 /**
@@ -24,14 +23,15 @@ export interface DraggableBankPieceProps {
  */
 export const DraggableBankPiece: React.FC<DraggableBankPieceProps> = ({
   piece,
-  pieceSize,
   pieceStyle,
   onDragStart,
   onDragUpdate,
   onDragEnd,
   isDragging,
-  pieceSet,
 }) => {
+  // Get theme from context
+  const { squareSize } = useBoardTheme();
+  const pieceSize = squareSize * 0.7;
   const panGesture = useBankPieceGesture({
     piece,
     onDragStart,
@@ -60,7 +60,6 @@ export const DraggableBankPiece: React.FC<DraggableBankPieceProps> = ({
             piece={piece}
             size={pieceSize * 0.8}
             style={pieceStyle}
-            pieceSet={pieceSet}
           />
         </Animated.View>
       </GestureDetector>

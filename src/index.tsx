@@ -30,3 +30,11 @@ export { TurnToggler } from './components/TurnToggler';
 export { EditorToolsPanel } from './components/EditorToolsPanel';
 export { PieceSetSelector } from './components/PieceSetSelector';
 export { BoardEditor } from './components/BoardEditor';
+
+// Export context and hooks
+export {
+  BoardThemeProvider,
+  useBoardTheme,
+  type BoardTheme,
+  type BoardThemeProviderProps,
+} from './contexts/BoardThemeContext';

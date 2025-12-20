@@ -1,8 +1,9 @@
 import React from 'react';
 import { View, StyleSheet } from 'react-native';
 import type { SharedValue } from 'react-native-reanimated';
-import type { PieceSymbol, PieceSet } from '../types';
+import type { PieceSymbol } from '../types';
 import { DraggablePiece } from './DraggablePiece';
+import { useBoardTheme } from '../contexts/BoardThemeContext';
 
 export interface BoardSquareProps {
   row: number;
@@ -10,16 +11,12 @@ export interface BoardSquareProps {
   displayRow: number;
   displayCol: number;
   piece: PieceSymbol | null;
-  squareSize: number;
-  lightSquareColor: string;
-  darkSquareColor: string;
   isBeingDragged: boolean;
   onDragStart: (row: number, col: number, piece: PieceSymbol) => void;
   onDragEnd: (x: number, y: number) => void;
   pieceStyle?: any;
   translateX: SharedValue<number>;
   translateY: SharedValue<number>;
-  pieceSet?: PieceSet | string;
 }
 
 /**
@@ -32,17 +29,16 @@ export const BoardSquare: React.FC<BoardSquareProps> = ({
   displayRow,
   displayCol,
   piece,
-  squareSize,
-  lightSquareColor,
-  darkSquareColor,
   isBeingDragged,
   onDragStart,
   onDragEnd,
   pieceStyle,
   translateX,
   translateY,
-  pieceSet,
 }) => {
+  // Get theme from context
+  const { squareSize, lightSquareColor, darkSquareColor } = useBoardTheme();
+
   const isLight = (row + col) % 2 === 0;
 
   return (
@@ -62,14 +58,12 @@ export const BoardSquare: React.FC<BoardSquareProps> = ({
         piece={piece}
         row={displayRow}
         col={displayCol}
-        squareSize={squareSize}
         onDragStart={onDragStart}
         onDragEnd={onDragEnd}
         pieceStyle={pieceStyle}
         translateX={translateX}
         translateY={translateY}
         isBeingDragged={isBeingDragged}
-        pieceSet={pieceSet}
       />
     </View>
   );
