@@ -1,10 +1,11 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { View, ScrollView, StyleSheet } from 'react-native';
 import type { BoardEditorProps, PieceSymbol } from '../types';
 import { EditableBoard } from './EditableBoard';
 import { PieceBank } from './PieceBank';
 import { FenDisplay } from './FenDisplay';
 import { EditorToolsPanel } from './EditorToolsPanel';
+import { FlipBoardButton } from './FlipBoardButton';
 import { DEFAULT_FEN } from '../utils';
 import { DEFAULT_SQUARE_SIZE, DEFAULT_PIECE_SET, DEFAULT_LIGHT_SQUARE_COLOR, DEFAULT_DARK_SQUARE_COLOR } from '../constants';
 import { useFenState } from '../hooks/useFenState';
@@ -54,11 +55,16 @@ export const BoardEditor: React.FC<BoardEditorProps> = ({
     showEnPassantInput = true,
     showTurnToggler = true,
     showPieceBank = true,
-    flipped = false,
+    flipped: initialFlipped = false,
     showEditorToolsPanel = true,
     editorToolsPanelExpanded = false,
     showPieceSetSelector = true,
+    showFlipBoardButton = true,
+    flipBoardButtonLocation = 'overlay',
   } = uiConfig;
+
+  // Manage flipped state internally
+  const [flipped, setFlipped] = useState(initialFlipped);
 
   const handlePieceDropFromBank = (piece: PieceSymbol, x: number, y: number) => {
     const square = calculateDropSquare(x, y, boardLayout, squareSize, flipped);
@@ -73,15 +79,19 @@ export const BoardEditor: React.FC<BoardEditorProps> = ({
     showCastlingRights,
     showEnPassantInput,
     showPieceSetSelector,
+    showFlipBoardButton,
+    flipBoardButtonLocation,
     turn: components.activeColor,
     castlingRights: components.castlingAvailability,
     enPassantSquare: components.enPassantTarget,
     fen,
     pieceSet,
+    flipped,
     onTurnChange: handleTurnChange,
     onCastlingChange: handleCastlingChange,
     onEnPassantChange: handleEnPassantChange,
     onPieceSetChange: handlePieceSetChange,
+    onFlipChange: setFlipped,
     renderEditorTools,
   });
 
@@ -124,6 +134,17 @@ export const BoardEditor: React.FC<BoardEditorProps> = ({
             flipped={flipped}
           />
         </View>
+
+        {/* Flip Board Button - Between Board and White Piece Bank */}
+        {showFlipBoardButton && flipBoardButtonLocation === 'overlay' && (
+          <View style={styles.flipButtonContainer}>
+            <FlipBoardButton
+              flipped={flipped}
+              onFlipChange={setFlipped}
+              variant="overlay"
+            />
+          </View>
+        )}
 
         {/* White Piece Bank - Below Board */}
         {showPieceBank && (
@@ -179,7 +200,13 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   boardContainer: {
-    marginBottom: 20,
+    marginBottom: 8,
+  },
+  flipButtonContainer: {
+    width: '100%',
+    maxWidth: 400,
+    alignItems: 'flex-end',
+    marginBottom: 12,
   },
   section: {
     marginBottom: 16,

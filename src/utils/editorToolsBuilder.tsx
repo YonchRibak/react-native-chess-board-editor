@@ -5,21 +5,26 @@ import { TurnToggler } from '../components/TurnToggler';
 import { CastlingRightsTogglers } from '../components/CastlingRightsTogglers';
 import { EnPassantInput } from '../components/EnPassantInput';
 import { PieceSetSelector } from '../components/PieceSetSelector';
+import { FlipBoardButton } from '../components/FlipBoardButton';
 
 export interface EditorToolsConfig {
   showTurnToggler: boolean;
   showCastlingRights: boolean;
   showEnPassantInput: boolean;
   showPieceSetSelector: boolean;
+  showFlipBoardButton: boolean;
+  flipBoardButtonLocation: 'overlay' | 'panel';
   turn: 'w' | 'b';
   castlingRights: string;
   enPassantSquare: string;
   fen: string;
   pieceSet: PieceSet | string;
+  flipped: boolean;
   onTurnChange: (turn: 'w' | 'b') => void;
   onCastlingChange: (castlingRights: string) => void;
   onEnPassantChange: (enPassantSquare: string) => void;
   onPieceSetChange: (pieceSet: PieceSet | string) => void;
+  onFlipChange: (flipped: boolean) => void;
 }
 
 export interface BuildEditorToolsOptions extends EditorToolsConfig {
@@ -56,6 +61,15 @@ export const buildDefaultEditorTools = (config: EditorToolsConfig): DefaultEdito
         />
       </View>
     ) : null,
+    flipBoardButton: config.showFlipBoardButton && config.flipBoardButtonLocation === 'panel' ? (
+      <View style={styles.toolSection} key="flip-board-button">
+        <FlipBoardButton
+          flipped={config.flipped}
+          onFlipChange={config.onFlipChange}
+          variant="inline"
+        />
+      </View>
+    ) : null,
   };
 };
 
@@ -86,6 +100,7 @@ export const buildEditorToolsLayout = (options: BuildEditorToolsOptions): Editor
         {defaultTools.turnToggler}
         {defaultTools.castlingRights}
         {defaultTools.enPassantInput}
+        {defaultTools.flipBoardButton}
       </>
     ),
   };

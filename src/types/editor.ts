@@ -5,6 +5,7 @@ export interface DefaultEditorTools {
   turnToggler: React.ReactNode;
   castlingRights: React.ReactNode;
   enPassantInput: React.ReactNode;
+  flipBoardButton: React.ReactNode;
 }
 
 /**

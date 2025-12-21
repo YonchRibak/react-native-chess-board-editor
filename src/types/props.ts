@@ -112,6 +112,22 @@ export interface TurnTogglerProps {
 }
 
 /**
+ * Props for FlipBoardButton component
+ */
+export interface FlipBoardButtonProps {
+  /** Current flipped state */
+  flipped: boolean;
+  /** Callback when flip state changes */
+  onFlipChange: (flipped: boolean) => void;
+  /** Container style */
+  containerStyle?: StyleProp<ViewStyle>;
+  /** Button style */
+  buttonStyle?: StyleProp<ViewStyle>;
+  /** Variant: 'overlay' for floating button, 'inline' for panel */
+  variant?: 'overlay' | 'inline';
+}
+
+/**
  * Props for EditorToolsPanel component
  */
 export interface EditorToolsPanelProps {
@@ -155,6 +171,10 @@ export interface BoardEditorUIConfig {
   editorToolsPanelExpanded?: boolean;
   /** Whether to show piece set selector */
   showPieceSetSelector?: boolean;
+  /** Whether to show flip board button */
+  showFlipBoardButton?: boolean;
+  /** Where to show flip board button: 'overlay' for bottom-right corner of board, 'panel' for editor tools panel */
+  flipBoardButtonLocation?: 'overlay' | 'panel';
 }
 
 /**

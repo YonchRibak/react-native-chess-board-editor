@@ -21,6 +21,7 @@ export type {
   CastlingRightsTogglersProps,
   EnPassantInputProps,
   TurnTogglerProps,
+  FlipBoardButtonProps,
   EditorToolsPanelProps,
   BoardEditorUIConfig,
   BoardEditorProps,

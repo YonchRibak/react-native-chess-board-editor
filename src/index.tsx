@@ -29,6 +29,7 @@ export { EnPassantInput } from './components/EnPassantInput';
 export { TurnToggler } from './components/TurnToggler';
 export { EditorToolsPanel } from './components/EditorToolsPanel';
 export { PieceSetSelector } from './components/PieceSetSelector';
+export { FlipBoardButton } from './components/FlipBoardButton';
 export { BoardEditor } from './components/BoardEditor';
 
 // Export context and hooks
