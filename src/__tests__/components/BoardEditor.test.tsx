@@ -18,13 +18,13 @@ describe('BoardEditor Component', () => {
 
   describe('rendering', () => {
     it('should render all components by default', () => {
-      const { getByLabelText, getByText } = render(
+      const { getByLabelText, getByText, queryByText } = render(
         <BoardEditor onFenChange={mockOnFenChange} />
       );
 
-      // Piece banks should be rendered
-      expect(getByText('Black Pieces')).toBeTruthy();
-      expect(getByText('White Pieces')).toBeTruthy();
+      // Piece banks should be rendered but labels hidden by default
+      expect(queryByText('Black Pieces')).toBeNull();
+      expect(queryByText('White Pieces')).toBeNull();
 
       // FEN display
       expect(getByText('FEN:')).toBeTruthy();
@@ -246,13 +246,14 @@ describe('BoardEditor Component', () => {
 
   describe('UI configuration', () => {
     it('should use horizontal piece bank by default', () => {
-      const { getByText } = render(
+      const { queryByText, getByText, toJSON } = render(
         <BoardEditor onFenChange={mockOnFenChange} />
       );
 
-      // Piece banks should be rendered
-      expect(getByText('White Pieces')).toBeTruthy();
-      expect(getByText('Black Pieces')).toBeTruthy();
+      // Piece banks should be rendered but labels hidden by default
+      expect(queryByText('White Pieces')).toBeNull();
+      expect(queryByText('Black Pieces')).toBeNull();
+      expect(toJSON()).toBeTruthy(); // Board and banks are still rendered
       expect(getByText('FEN:')).toBeTruthy();
     });
 

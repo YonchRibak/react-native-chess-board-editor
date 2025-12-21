@@ -7,6 +7,7 @@ import { useBankDrag } from '../hooks/useBankDrag';
 import { DraggableBankPiece } from './DraggableBankPiece';
 import { FloatingPiece } from './FloatingPiece';
 import { useBoardTheme } from '../contexts/BoardThemeContext';
+import { DEFAULT_BANK_PIECE_SCALE } from '../constants';
 
 /**
  * PieceBank Component
@@ -17,13 +18,18 @@ export const PieceBank: React.FC<PieceBankProps> = ({
   layout = 'horizontal',
   bankStyle,
   pieceStyle,
+  pieceSize,
   color,
-  showLabel = true,
+  showLabel = false,
+  labelConfig,
   onPieceDropCoords,
 }) => {
   // Get theme from context
   const { squareSize } = useBoardTheme();
-  const pieceSize = squareSize * 0.7;
+  // Use provided pieceSize or default to scale factor of square size
+  const actualPieceSize = pieceSize ?? squareSize * DEFAULT_BANK_PIECE_SCALE;
+  // Match board piece floating size when dragging
+  const floatingPieceSize = squareSize * 0.7 * 0.8;
 
   const { ref, layout: bankLayout, handleLayout } = useComponentLayout();
 
@@ -37,7 +43,7 @@ export const PieceBank: React.FC<PieceBankProps> = ({
     handleDragUpdate,
     handleDragEnd,
   } = useBankDrag({
-    pieceSize,
+    floatingPieceSize,
     bankLayout,
     onPieceDropCoords,
   });
@@ -45,13 +51,33 @@ export const PieceBank: React.FC<PieceBankProps> = ({
   const pieces = getPiecesByColor(color);
   const label = getBankLabel(color);
 
+  // Label styling
+  const {
+    fontSize = 14,
+    color: labelColor = '#333',
+    fontFamily,
+    fontWeight = '600',
+    textStyle,
+  } = labelConfig || {};
+
+  const labelTextStyle = [
+    styles.label,
+    {
+      fontSize,
+      color: labelColor,
+      fontFamily,
+      fontWeight,
+    },
+    textStyle,
+  ];
+
   return (
     <View
       ref={ref}
       style={[styles.container, bankStyle]}
       onLayout={handleLayout}
     >
-      {showLabel && <Text style={styles.label}>{label}</Text>}
+      {showLabel && <Text style={labelTextStyle}>{label}</Text>}
       <View
         style={[
           styles.piecesContainer,
@@ -62,6 +88,7 @@ export const PieceBank: React.FC<PieceBankProps> = ({
           <DraggableBankPiece
             key={piece}
             piece={piece}
+            pieceSize={actualPieceSize}
             pieceStyle={pieceStyle}
             onDragStart={handleDragStart}
             onDragUpdate={handleDragUpdate}
@@ -73,7 +100,7 @@ export const PieceBank: React.FC<PieceBankProps> = ({
 
       <FloatingPiece
         piece={dragging?.piece ?? null}
-        size={pieceSize * 0.8}
+        size={floatingPieceSize}
         translateX={translateX}
         translateY={translateY}
         opacity={opacity}

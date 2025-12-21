@@ -21,3 +21,8 @@ export const DEFAULT_DARK_SQUARE_COLOR = '#B58863';
  * Default piece set
  */
 export const DEFAULT_PIECE_SET = 'cburnett';
+
+/**
+ * Default bank piece scale factor (relative to square size)
+ */
+export const DEFAULT_BANK_PIECE_SCALE = 1.3;

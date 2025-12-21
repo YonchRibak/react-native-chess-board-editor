@@ -10,6 +10,7 @@ import { useBoardTheme } from '../contexts/BoardThemeContext';
 export interface DraggableBankPieceProps {
   piece: PieceSymbol;
   pieceStyle?: any;
+  pieceSize?: number;
   onDragStart: (piece: PieceSymbol, x: number, y: number) => void;
   onDragUpdate: (x: number, y: number) => void;
   onDragEnd: (x: number, y: number) => void;
@@ -24,6 +25,7 @@ export interface DraggableBankPieceProps {
 export const DraggableBankPiece: React.FC<DraggableBankPieceProps> = ({
   piece,
   pieceStyle,
+  pieceSize: propPieceSize,
   onDragStart,
   onDragUpdate,
   onDragEnd,
@@ -31,7 +33,7 @@ export const DraggableBankPiece: React.FC<DraggableBankPieceProps> = ({
 }) => {
   // Get theme from context
   const { squareSize } = useBoardTheme();
-  const pieceSize = squareSize * 0.7;
+  const pieceSize = propPieceSize ?? squareSize * 0.7;
   const panGesture = useBankPieceGesture({
     piece,
     onDragStart,

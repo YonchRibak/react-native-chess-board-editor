@@ -4,7 +4,7 @@ import type { PieceSymbol } from '../types';
 import type { DraggingState, ComponentLayout } from '../types/bank';
 
 interface UseBankDragParams {
-  pieceSize: number;
+  floatingPieceSize: number;
   bankLayout: ComponentLayout;
   onPieceDropCoords?: (piece: PieceSymbol, x: number, y: number) => void;
 }
@@ -14,7 +14,7 @@ interface UseBankDragParams {
  * Handles drag start, update, and end with floating piece position tracking
  */
 export const useBankDrag = ({
-  pieceSize,
+  floatingPieceSize,
   bankLayout,
   onPieceDropCoords,
 }: UseBankDragParams) => {
@@ -27,9 +27,8 @@ export const useBankDrag = ({
   const handleDragStart = (piece: PieceSymbol, startX: number, startY: number) => {
     // Position floating piece centered on touch point
     // Account for bank position since floating piece is positioned relative to bank
-    const actualPieceSize = pieceSize * 0.8;
-    translateX.value = startX - bankLayout.x - actualPieceSize / 2;
-    translateY.value = startY - bankLayout.y - actualPieceSize / 2;
+    translateX.value = startX - bankLayout.x - floatingPieceSize / 2;
+    translateY.value = startY - bankLayout.y - floatingPieceSize / 2;
     // Animate opacity to 50% and scale to 4x when drag starts
     opacity.value = withSpring(0.5, { damping: 30, stiffness: 100 });
     scale.value = withSpring(4, { damping: 30, stiffness: 100 });
@@ -40,9 +39,8 @@ export const useBankDrag = ({
   const handleDragUpdate = (absoluteX: number, absoluteY: number) => {
     // Update position centered on touch point
     // Account for bank position since floating piece is positioned relative to bank
-    const actualPieceSize = pieceSize * 0.8;
-    translateX.value = absoluteX - bankLayout.x - actualPieceSize / 2;
-    translateY.value = absoluteY - bankLayout.y - actualPieceSize / 2;
+    translateX.value = absoluteX - bankLayout.x - floatingPieceSize / 2;
+    translateY.value = absoluteY - bankLayout.y - floatingPieceSize / 2;
   };
 
   const handleDragEnd = (finalX: number, finalY: number) => {

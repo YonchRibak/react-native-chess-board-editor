@@ -116,7 +116,6 @@ export const BoardEditor: React.FC<BoardEditorProps> = ({
             <PieceBank
               layout={bankLayout}
               color="black"
-              showLabel={true}
               onPieceDropCoords={handlePieceDropFromBank}
             />
           </View>
@@ -152,7 +151,6 @@ export const BoardEditor: React.FC<BoardEditorProps> = ({
             <PieceBank
               layout={bankLayout}
               color="white"
-              showLabel={true}
               onPieceDropCoords={handlePieceDropFromBank}
             />
           </View>

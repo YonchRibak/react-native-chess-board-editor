@@ -48,6 +48,22 @@ export interface EditableBoardProps {
 }
 
 /**
+ * Configuration for piece bank label styling
+ */
+export interface BankLabelConfig {
+  /** Text style for bank label */
+  textStyle?: StyleProp<TextStyle>;
+  /** Font size for bank label */
+  fontSize?: number;
+  /** Color for bank label */
+  color?: string;
+  /** Font family for bank label */
+  fontFamily?: string;
+  /** Font weight for bank label */
+  fontWeight?: 'normal' | 'bold' | '100' | '200' | '300' | '400' | '500' | '600' | '700' | '800' | '900';
+}
+
+/**
  * Props for PieceBank component
  */
 export interface PieceBankProps {
@@ -61,12 +77,14 @@ export interface PieceBankProps {
   bankStyle?: StyleProp<ViewStyle>;
   /** Style for individual pieces */
   pieceStyle?: StyleProp<ViewStyle>;
-  /** Piece size */
+  /** Piece size in pixels */
   pieceSize?: number;
   /** Color filter - show only white, black, or all pieces */
   color?: 'white' | 'black';
-  /** Whether to show the label above the pieces */
+  /** Whether to show the label above the pieces (default: false) */
   showLabel?: boolean;
+  /** Configuration for label styling */
+  labelConfig?: BankLabelConfig;
   /** Piece set style to use (built-in or custom registered) */
   pieceSet?: PieceSet | string;
 }

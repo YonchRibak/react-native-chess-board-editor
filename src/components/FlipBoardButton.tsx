@@ -68,8 +68,9 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     includeFontPadding: false,
     textAlignVertical: 'center',
-    marginTop: -2,
-    marginLeft: -2,
+    backgroundColor: 'transparent',
+    marginLeft: -4,
+    marginTop: -4,
   },
   inlineButton: {
     flexDirection: 'row',
