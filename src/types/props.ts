@@ -4,6 +4,24 @@ import type { Square } from './board';
 import type { DefaultEditorTools, EditorToolsLayout } from './editor';
 
 /**
+ * Configuration for board coordinate labels (rank and file labels)
+ */
+export interface CoordinateLabelsConfig {
+  /** Whether to show coordinate labels */
+  show?: boolean;
+  /** Text style for coordinate labels */
+  textStyle?: StyleProp<TextStyle>;
+  /** Font size for coordinate labels */
+  fontSize?: number;
+  /** Color for coordinate labels */
+  color?: string;
+  /** Font family for coordinate labels */
+  fontFamily?: string;
+  /** Font weight for coordinate labels */
+  fontWeight?: 'normal' | 'bold' | '100' | '200' | '300' | '400' | '500' | '600' | '700' | '800' | '900';
+}
+
+/**
  * Props for EditableBoard component
  */
 export interface EditableBoardProps {
@@ -25,6 +43,8 @@ export interface EditableBoardProps {
   flipped?: boolean;
   /** Piece set style to use (built-in or custom registered) */
   pieceSet?: PieceSet | string;
+  /** Configuration for rank and file coordinate labels */
+  coordinateLabels?: CoordinateLabelsConfig;
 }
 
 /**

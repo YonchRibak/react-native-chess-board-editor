@@ -122,4 +122,98 @@ describe('EditableBoard Component', () => {
       expect(UNSAFE_getByType(GestureHandlerRootView)).toBeTruthy();
     });
   });
+
+  describe('coordinate labels', () => {
+    it('should render coordinate labels by default', () => {
+      const { getByText } = render(
+        <EditableBoard fen={DEFAULT_FEN} onFenChange={mockOnFenChange} />
+      );
+
+      // Check for rank labels (1-8)
+      for (let i = 1; i <= 8; i++) {
+        expect(getByText(i.toString())).toBeTruthy();
+      }
+
+      // Check for file labels (a-h)
+      const files = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'];
+      files.forEach((file) => {
+        expect(getByText(file)).toBeTruthy();
+      });
+    });
+
+    it('should hide coordinate labels when show is false', () => {
+      const { queryByText } = render(
+        <EditableBoard
+          fen={DEFAULT_FEN}
+          onFenChange={mockOnFenChange}
+          coordinateLabels={{ show: false }}
+        />
+      );
+
+      // Rank labels should not be present
+      expect(queryByText('1')).toBeNull();
+      expect(queryByText('8')).toBeNull();
+
+      // File labels should not be present
+      expect(queryByText('a')).toBeNull();
+      expect(queryByText('h')).toBeNull();
+    });
+
+    it('should apply custom styling to coordinate labels', () => {
+      const { getByText } = render(
+        <EditableBoard
+          fen={DEFAULT_FEN}
+          onFenChange={mockOnFenChange}
+          coordinateLabels={{
+            fontSize: 20,
+            color: '#FF0000',
+            fontWeight: 'bold',
+          }}
+        />
+      );
+
+      const rankLabel = getByText('1');
+      expect(rankLabel.props.style).toEqual(
+        expect.arrayContaining([
+          expect.objectContaining({
+            fontSize: 20,
+            color: '#FF0000',
+            fontWeight: 'bold',
+          }),
+        ])
+      );
+
+      const fileLabel = getByText('a');
+      expect(fileLabel.props.style).toEqual(
+        expect.arrayContaining([
+          expect.objectContaining({
+            fontSize: 20,
+            color: '#FF0000',
+            fontWeight: 'bold',
+          }),
+        ])
+      );
+    });
+
+    it('should update coordinate labels when board is flipped', () => {
+      const { getAllByText } = render(
+        <EditableBoard
+          fen={DEFAULT_FEN}
+          onFenChange={mockOnFenChange}
+          flipped={true}
+        />
+      );
+
+      const rankLabels = getAllByText(/[1-8]/);
+      const fileLabels = getAllByText(/[a-h]/);
+
+      // When flipped, rank labels should be from 1 to 8 (top to bottom)
+      expect(rankLabels[0].children[0]).toBe('1');
+      expect(rankLabels[7].children[0]).toBe('8');
+
+      // When flipped, file labels should be from h to a (left to right)
+      expect(fileLabels[0].children[0]).toBe('h');
+      expect(fileLabels[7].children[0]).toBe('a');
+    });
+  });
 });

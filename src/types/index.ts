@@ -15,6 +15,7 @@ export type { DefaultEditorTools, EditorToolsLayout } from './editor';
 
 // Component props
 export type {
+  CoordinateLabelsConfig,
   EditableBoardProps,
   PieceBankProps,
   FenDisplayProps,

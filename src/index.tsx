@@ -31,6 +31,7 @@ export { EditorToolsPanel } from './components/EditorToolsPanel';
 export { PieceSetSelector } from './components/PieceSetSelector';
 export { FlipBoardButton } from './components/FlipBoardButton';
 export { BoardEditor } from './components/BoardEditor';
+export { RankLabels, FileLabels } from './components/BoardCoordinates';
 
 // Export context and hooks
 export {
