@@ -11,7 +11,9 @@
       "Bash(npm test:*)",
       "Bash(find:*)",
       "Bash(npx tsc:*)",
-      "Bash(npm run test:*)"
+      "Bash(npm run test:*)",
+      "Bash(cat:*)",
+      "WebSearch"
     ],
     "deny": [],
     "ask": []

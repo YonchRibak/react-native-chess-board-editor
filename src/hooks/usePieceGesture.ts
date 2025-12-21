@@ -32,6 +32,7 @@ export const usePieceGesture = ({
 }: UsePieceGestureParams) => {
   const startX = useSharedValue(0);
   const startY = useSharedValue(0);
+  const hasEnded = useSharedValue(false);
 
   const panGesture = Gesture.Pan()
     .enabled(!!piece) // Only enable gesture if piece exists
@@ -43,6 +44,7 @@ export const usePieceGesture = ({
 
       startX.value = initialX;
       startY.value = initialY;
+      hasEnded.value = false;
       // Center floating piece on the touch point using actual piece size
       translateX.value = initialX - pieceSize / 2;
       translateY.value = initialY - pieceSize / 2;
@@ -56,7 +58,9 @@ export const usePieceGesture = ({
       translateY.value = startY.value + event.translationY - pieceSize / 2;
     })
     .onEnd((event) => {
-      if (!piece) return;
+      if (!piece || hasEnded.value) return;
+      hasEnded.value = true;
+
       const finalX = startX.value + event.translationX;
       const finalY = startY.value + event.translationY;
 
@@ -64,6 +68,17 @@ export const usePieceGesture = ({
 
       // Don't reset position - let the floating piece fade out at its current location
       // The useBoardDrag hook handles the fade-out animation
+    })
+    .onFinalize(() => {
+      // Failsafe: ensure onDragEnd is called even if onEnd doesn't fire
+      // This handles cancelled/failed gestures
+      if (!piece || hasEnded.value) return;
+      hasEnded.value = true;
+
+      const finalX = startX.value;
+      const finalY = startY.value;
+
+      runOnJS(onDragEnd)(finalX, finalY);
     });
 
   return panGesture;

@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import { useSharedValue, withSpring } from 'react-native-reanimated';
 import type { PieceSymbol, Square } from '../types';
 import { coordsToSquare, movePiece, updatePieceAt } from '../utils/fen';
@@ -32,6 +32,8 @@ export const useBoardDrag = (
   squareSize: number
 ): UseBoardDragReturn => {
   const [draggingPiece, setDraggingPiece] = useState<DraggingPiece | null>(null);
+  const draggingPieceRef = useRef<DraggingPiece | null>(null);
+  const cleanupTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   const translateX = useSharedValue(0);
   const translateY = useSharedValue(0);
@@ -40,13 +42,23 @@ export const useBoardDrag = (
   const opacity = useSharedValue(1);
 
   const handleDragStart = (row: number, col: number, piece: PieceSymbol) => {
+    // Clear any pending cleanup from previous drag
+    if (cleanupTimeoutRef.current) {
+      clearTimeout(cleanupTimeoutRef.current);
+      cleanupTimeoutRef.current = null;
+    }
+
     const square = coordsToSquare({ row, col });
-    setDraggingPiece({
+    const pieceData = {
       piece,
       sourceSquare: square,
       sourceRow: row,
       sourceCol: col,
-    });
+    };
+
+    setDraggingPiece(pieceData);
+    draggingPieceRef.current = pieceData; // Store in ref for immediate access
+
     isDragging.value = true;
     // Animate scale to 4x and opacity to 50% when drag starts
     scale.value = withSpring(4, { damping: 30, stiffness: 100 });
@@ -54,10 +66,10 @@ export const useBoardDrag = (
   };
 
   const handleDragEnd = (absoluteX: number, absoluteY: number) => {
-    if (!draggingPiece) return;
+    // Use ref instead of state to avoid race condition
+    const currentDraggingPiece = draggingPieceRef.current;
 
-    // Store reference to dragging piece for the animation
-    const currentDraggingPiece = draggingPiece;
+    if (!currentDraggingPiece) return;
 
     // Calculate which square the piece was dropped on
     const dropTarget = calculateBoardDropTarget(absoluteX, absoluteY, squareSize);
@@ -83,9 +95,15 @@ export const useBoardDrag = (
       }
     });
 
-    // Reset dragging state after animation duration
-    setTimeout(() => {
+    // Failsafe: Reset all state after animation duration
+    // This ensures cleanup happens even if animation callbacks don't fire
+    cleanupTimeoutRef.current = setTimeout(() => {
       setDraggingPiece(null);
+      draggingPieceRef.current = null;
+      isDragging.value = false;
+      opacity.value = 0;
+      scale.value = 1;
+      cleanupTimeoutRef.current = null;
     }, 300);
   };
 
