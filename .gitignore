@@ -28,3 +28,10 @@ coverage/
 .env.development.local
 .env.test.local
 .env.production.local
+
+# Claude Code
+.claude/
+
+# Root markdown files (except README.md)
+/*.md
+!README.md
