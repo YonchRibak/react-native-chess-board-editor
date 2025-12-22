@@ -340,6 +340,9 @@ export function isValidEnPassantSquareFormat(square: string): boolean {
 
 /**
  * Validate en passant square with board context (checks pawn positioning)
+ * Per FEN specification: validates that the jumped pawn exists at the expected rank.
+ * Does NOT check if an enemy pawn can actually capture (that's a game rule, not a FEN rule).
+ *
  * @param fen - Current FEN string
  * @param enPassantSquare - En passant square to validate
  * @returns True if valid en passant square with proper pawn setup
@@ -359,45 +362,26 @@ export function isValidEnPassantSquare(
 
   const components = parseFen(fen);
   const board = fenToBoardState(components.piecePlacement);
-  const epCoords = squareToCoords(enPassantSquare);
   const file = enPassantSquare[0];
   const rank = parseInt(enPassantSquare[1], 10);
 
-  // Rank 3 means black just moved (white to play), rank 6 means white just moved (black to play)
+  // Rank 3 means WHITE just moved (black to play), rank 6 means BLACK just moved (white to play)
   if (rank === 3) {
-    // Black pawn should be on rank 4 (row 4)
-    const blackPawnRow = 4;
-    const blackPawnCol = fileToCol(file);
-    const blackPawn = board[blackPawnRow][blackPawnCol];
-
-    if (blackPawn !== 'p') {
-      return false; // No black pawn at expected position
-    }
-
-    // Check for white pawns on adjacent files on rank 4
-    const hasWhitePawnLeft =
-      blackPawnCol > 0 && board[blackPawnRow][blackPawnCol - 1] === 'P';
-    const hasWhitePawnRight =
-      blackPawnCol < 7 && board[blackPawnRow][blackPawnCol + 1] === 'P';
-
-    return hasWhitePawnLeft || hasWhitePawnRight;
-  } else if (rank === 6) {
-    // White pawn should be on rank 5 (row 3)
-    const whitePawnRow = 3;
+    // White pawn should be on rank 4 (row 4) - it jumped from rank 2 to rank 4
+    const whitePawnRow = 4;
     const whitePawnCol = fileToCol(file);
     const whitePawn = board[whitePawnRow][whitePawnCol];
 
-    if (whitePawn !== 'P') {
-      return false; // No white pawn at expected position
-    }
+    // Only check that the jumped pawn exists
+    return whitePawn === 'P';
+  } else if (rank === 6) {
+    // Black pawn should be on rank 5 (row 3) - it jumped from rank 7 to rank 5
+    const blackPawnRow = 3;
+    const blackPawnCol = fileToCol(file);
+    const blackPawn = board[blackPawnRow][blackPawnCol];
 
-    // Check for black pawns on adjacent files on rank 5
-    const hasBlackPawnLeft =
-      whitePawnCol > 0 && board[whitePawnRow][whitePawnCol - 1] === 'p';
-    const hasBlackPawnRight =
-      whitePawnCol < 7 && board[whitePawnRow][whitePawnCol + 1] === 'p';
-
-    return hasBlackPawnLeft || hasBlackPawnRight;
+    // Only check that the jumped pawn exists
+    return blackPawn === 'p';
   }
 
   return false;
@@ -414,9 +398,9 @@ export function getTurnFromEnPassant(enPassantSquare: string): PieceColor {
   }
 
   const rank = enPassantSquare[1];
-  // Rank 3 = black pawn just moved (e7→e5), so white to play
-  // Rank 6 = white pawn just moved (e2→e4), so black to play
-  return rank === '3' ? 'w' : 'b';
+  // Rank 3 = white pawn just moved (e2→e4), so black to play
+  // Rank 6 = black pawn just moved (e7→e5), so white to play
+  return rank === '3' ? 'b' : 'w';
 }
 
 /**

@@ -1,4 +1,5 @@
 import { isValidEnPassantSquareFormat, isValidEnPassantSquare, isValidFenStructure } from './fen';
+import { EN_PASSANT_MESSAGES } from '../constants/validationMessages';
 
 export interface ValidationResult {
   valid: boolean;
@@ -29,7 +30,7 @@ export const validateEnPassantInput = (
   if (!isValidEnPassantSquareFormat(value)) {
     return {
       valid: false,
-      error: 'Must be rank 3 (e.g., e3) or rank 6 (e.g., d6)',
+      error: EN_PASSANT_MESSAGES.INVALID_FORMAT,
     };
   }
 
@@ -38,7 +39,7 @@ export const validateEnPassantInput = (
     if (!isValidEnPassantSquare(fen, value)) {
       return {
         valid: false,
-        error: 'Invalid: no pawns in correct position for en passant',
+        error: EN_PASSANT_MESSAGES.INVALID_POSITION,
       };
     }
   }

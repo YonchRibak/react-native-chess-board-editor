@@ -128,10 +128,10 @@ describe('BoardEditor Component', () => {
     });
 
     it('should update FEN when en passant changes', () => {
-      // Position with pawns in correct positions for e3 en passant (black pawn on e4, white pawn on d4 or f4)
+      // White pawn on e4 (jumped from e2 to e4, so e3 is en passant target)
       const { getByLabelText, getByText } = render(
         <BoardEditor
-          initialFen="rnbqkbnr/pppp1ppp/8/8/3Pp3/8/PPP1PPPP/RNBQKBNR w KQkq - 0 1"
+          initialFen="rnbqkbnr/pppppppp/8/8/4P3/8/PPPP1PPP/RNBQKBNR b KQkq - 0 1"
           onFenChange={mockOnFenChange}
         />
       );
@@ -147,10 +147,10 @@ describe('BoardEditor Component', () => {
     });
 
     it('should auto-update turn when en passant changes to rank 3', () => {
-      // Position with pawns in correct positions for e3 en passant
+      // White pawn on e4 (e3 en passant means white just moved, so black to play)
       const { getByLabelText, getByText } = render(
         <BoardEditor
-          initialFen="rnbqkbnr/pppp1ppp/8/8/3Pp3/8/PPP1PPPP/RNBQKBNR b KQkq - 0 1"
+          initialFen="rnbqkbnr/pppppppp/8/8/4P3/8/PPPP1PPP/RNBQKBNR w KQkq - 0 1"
           onFenChange={mockOnFenChange}
         />
       );
@@ -162,15 +162,15 @@ describe('BoardEditor Component', () => {
 
       expect(mockOnFenChange).toHaveBeenCalled();
       const newFen = mockOnFenChange.mock.calls[0][0];
-      expect(newFen).toContain(' w '); // Turn auto-updated to white
+      expect(newFen).toContain(' b '); // Turn auto-updated to black (white just moved)
       expect(newFen).toContain(' e3 '); // En passant square set
     });
 
     it('should auto-update turn when en passant changes to rank 6', () => {
-      // Position with pawns in correct positions for e6 en passant (white pawn on e5, black pawn on d5 or f5)
+      // Black pawn on e5 (e6 en passant means black just moved, so white to play)
       const { getByLabelText, getByText } = render(
         <BoardEditor
-          initialFen="rnbqkbnr/pppp1ppp/8/3pP3/8/8/PPPP1PPP/RNBQKBNR w KQkq - 0 1"
+          initialFen="rnbqkbnr/pppp1ppp/8/4p3/8/8/PPPPPPPP/RNBQKBNR b KQkq - 0 1"
           onFenChange={mockOnFenChange}
         />
       );
@@ -182,7 +182,7 @@ describe('BoardEditor Component', () => {
 
       expect(mockOnFenChange).toHaveBeenCalled();
       const newFen = mockOnFenChange.mock.calls[0][0];
-      expect(newFen).toContain(' b '); // Turn auto-updated to black
+      expect(newFen).toContain(' w '); // Turn auto-updated to white (black just moved)
       expect(newFen).toContain(' e6 '); // En passant square set
     });
   });
@@ -211,10 +211,10 @@ describe('BoardEditor Component', () => {
     });
 
     it('should handle multiple changes', () => {
-      // Use a FEN with proper pawn positions for e6 en passant
+      // Black pawn on e5 for valid e6 en passant
       const { getByLabelText, getByText } = render(
         <BoardEditor
-          initialFen="rnbqkbnr/pppp1ppp/8/3pP3/8/8/PPPP1PPP/RNBQKBNR w KQkq - 0 1"
+          initialFen="rnbqkbnr/pppp1ppp/8/4p3/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"
           onFenChange={mockOnFenChange}
         />
       );
@@ -240,7 +240,7 @@ describe('BoardEditor Component', () => {
       const lastFen = mockOnFenChange.mock.calls[2][0];
       expect(lastFen).toContain(' Qkq '); // K removed
       expect(lastFen).toContain(' e6 ');
-      expect(lastFen).toContain(' b '); // Auto-updated by en passant
+      expect(lastFen).toContain(' w '); // Auto-updated by en passant (black just moved)
     });
   });
 

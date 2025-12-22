@@ -1,4 +1,5 @@
 import { validateEnPassantInput, validateFenInput } from '../../utils/validation';
+import { EN_PASSANT_MESSAGES } from '../../constants/validationMessages';
 
 describe('validation', () => {
   describe('validateEnPassantInput', () => {
@@ -143,35 +144,35 @@ describe('validation', () => {
 
     describe('strict validation with FEN', () => {
       it('should accept valid e3 with correct pawn position in FEN', () => {
-        // Black pawn on e4, white pawn on d4 that can capture en passant
-        const fen = 'rnbqkbnr/pppp1ppp/8/8/3Pp3/8/PPP1PPPP/RNBQKBNR w KQkq e3 0 1';
+        // White pawn on e4 (jumped from e2 to e4, so e3 is en passant target)
+        const fen = 'rnbqkbnr/pppppppp/8/8/4P3/8/PPPP1PPP/RNBQKBNR b KQkq e3 0 1';
         const result = validateEnPassantInput('e3', fen);
         expect(result.valid).toBe(true);
         expect(result.error).toBeNull();
       });
 
       it('should accept valid e6 with correct pawn position in FEN', () => {
-        // White pawn on e5, black pawn on d5 that can capture en passant
-        const fen = 'rnbqkbnr/ppp1pppp/8/3pP3/8/8/PPPP1PPP/RNBQKBNR b KQkq e6 0 1';
+        // Black pawn on e5 (jumped from e7 to e5, so e6 is en passant target)
+        const fen = 'rnbqkbnr/pppp1ppp/8/4p3/8/8/PPPPPPPP/RNBQKBNR w KQkq e6 0 1';
         const result = validateEnPassantInput('e6', fen);
         expect(result.valid).toBe(true);
         expect(result.error).toBeNull();
       });
 
       it('should reject e3 without correct pawn position in FEN', () => {
-        // No black pawn on e4
+        // No white pawn on e4 (e3 requires white pawn on e4)
         const fen = 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1';
         const result = validateEnPassantInput('e3', fen);
         expect(result.valid).toBe(false);
-        expect(result.error).toBe('Invalid: no pawns in correct position for en passant');
+        expect(result.error).toBe(EN_PASSANT_MESSAGES.INVALID_POSITION);
       });
 
       it('should reject e6 without correct pawn position in FEN', () => {
-        // No white pawn on e5
+        // No black pawn on e5 (e6 requires black pawn on e5)
         const fen = 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR b KQkq - 0 1';
         const result = validateEnPassantInput('e6', fen);
         expect(result.valid).toBe(false);
-        expect(result.error).toBe('Invalid: no pawns in correct position for en passant');
+        expect(result.error).toBe(EN_PASSANT_MESSAGES.INVALID_POSITION);
       });
 
       it('should validate format even with invalid FEN', () => {

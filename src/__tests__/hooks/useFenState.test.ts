@@ -202,8 +202,8 @@ describe('useFenState', () => {
         result.current.handleEnPassantChange('e3');
       });
 
-      // En passant on rank 3 means black pawn just moved, so white to move
-      expect(result.current.components.activeColor).toBe('w');
+      // En passant on rank 3 means white pawn just moved, so black to move
+      expect(result.current.components.activeColor).toBe('b');
     });
 
     it('should auto-update turn for rank 6 en passant', () => {
@@ -215,8 +215,8 @@ describe('useFenState', () => {
         result.current.handleEnPassantChange('e6');
       });
 
-      // En passant on rank 6 means white pawn just moved, so black to move
-      expect(result.current.components.activeColor).toBe('b');
+      // En passant on rank 6 means black pawn just moved, so white to move
+      expect(result.current.components.activeColor).toBe('w');
     });
   });
 
@@ -284,8 +284,8 @@ describe('useFenState', () => {
 
       const finalFen = result.current.fen;
 
-      // Turn should be auto-updated to 'b' by en passant on rank 6 (white just moved)
-      expect(finalFen).toContain(' b ');
+      // Turn should be auto-updated to 'w' by en passant on rank 6 (black just moved)
+      expect(finalFen).toContain(' w ');
       expect(finalFen).toContain(' Kq ');
       expect(finalFen).toContain(' e6 ');
       expect(mockOnFenChange).toHaveBeenCalledTimes(3);
@@ -310,8 +310,8 @@ describe('useFenState', () => {
         result.current.handleEnPassantChange('e3');
       });
 
-      // After setting e3, turn should be auto-updated to 'w'
-      expect(result.current.components.activeColor).toBe('w');
+      // After setting e3, turn should be auto-updated to 'b' (white just moved)
+      expect(result.current.components.activeColor).toBe('b');
       expect(result.current.components.enPassantTarget).toBe('e3');
     });
   });

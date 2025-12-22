@@ -64,118 +64,123 @@ describe('FEN En Passant', () => {
       expect(isValidEnPassantSquare(DEFAULT_FEN, '-')).toBe(true);
     });
 
-    it('should validate e3 after e2-e4 (black pawn on e4, white pawns adjacent)', () => {
-      // Set up position: white pawn on e4, black pawn on d4
+    it('should validate e3 when white pawn is on e4 (white just moved e2-e4)', () => {
+      // Set up position: white pawn on e4 (moved from e2)
       let fen = updatePieceAt(DEFAULT_FEN, 'e2', null); // Remove white pawn from e2
-      fen = updatePieceAt(fen, 'e4', 'p'); // Black pawn on e4
-      fen = updatePieceAt(fen, 'd4', 'P'); // White pawn on d4 (can capture en passant)
+      fen = updatePieceAt(fen, 'e4', 'P'); // White pawn on e4
 
       expect(isValidEnPassantSquare(fen, 'e3')).toBe(true);
     });
 
-    it('should validate e3 with white pawn on f4', () => {
-      // Set up position: black pawn on e4, white pawn on f4
+    it('should validate e3 even without adjacent black pawns', () => {
+      // Per FEN spec: only the jumped pawn matters, not if capture is possible
       let fen = updatePieceAt(DEFAULT_FEN, 'e2', null);
-      fen = updatePieceAt(fen, 'e4', 'p'); // Black pawn on e4
-      fen = updatePieceAt(fen, 'f4', 'P'); // White pawn on f4 (can capture en passant)
+      fen = updatePieceAt(fen, 'e4', 'P'); // White pawn on e4
+      // No black pawns on d4 or f4 - should still be valid
 
       expect(isValidEnPassantSquare(fen, 'e3')).toBe(true);
     });
 
-    it('should validate e6 after e7-e5 (white pawn on e5, black pawns adjacent)', () => {
-      // Set up position: white pawn on e5, black pawn on d5
+    it('should validate e6 when black pawn is on e5 (black just moved e7-e5)', () => {
+      // Set up position: black pawn on e5 (moved from e7)
       let fen = updatePieceAt(DEFAULT_FEN, 'e7', null); // Remove black pawn from e7
-      fen = updatePieceAt(fen, 'e5', 'P'); // White pawn on e5
-      fen = updatePieceAt(fen, 'd5', 'p'); // Black pawn on d5 (can capture en passant)
+      fen = updatePieceAt(fen, 'e5', 'p'); // Black pawn on e5
 
       expect(isValidEnPassantSquare(fen, 'e6')).toBe(true);
     });
 
-    it('should reject e3 if no black pawn on e4', () => {
+    it('should validate e6 even without adjacent white pawns', () => {
+      // Per FEN spec: only the jumped pawn matters, not if capture is possible
+      let fen = updatePieceAt(DEFAULT_FEN, 'e7', null);
+      fen = updatePieceAt(fen, 'e5', 'p'); // Black pawn on e5
+      // No white pawns on d5 or f5 - should still be valid
+
+      expect(isValidEnPassantSquare(fen, 'e6')).toBe(true);
+    });
+
+    it('should reject e3 if no white pawn on e4', () => {
       // Empty e4 square
       const fen = DEFAULT_FEN;
       expect(isValidEnPassantSquare(fen, 'e3')).toBe(false);
     });
 
     it('should reject e3 if wrong piece on e4', () => {
-      // White pawn on e4 instead of black
+      // Black pawn on e4 instead of white
       let fen = updatePieceAt(DEFAULT_FEN, 'e2', null);
-      fen = updatePieceAt(fen, 'e4', 'P'); // White pawn, not black
+      fen = updatePieceAt(fen, 'e4', 'p'); // Black pawn, not white
 
       expect(isValidEnPassantSquare(fen, 'e3')).toBe(false);
     });
 
-    it('should reject e3 if no white pawns adjacent', () => {
-      // Black pawn on e4, but no white pawns on d4 or f4
-      let fen = updatePieceAt(DEFAULT_FEN, 'e2', null);
-      fen = updatePieceAt(fen, 'e4', 'p'); // Black pawn on e4
-      // No white pawns on d4 or f4
-
-      expect(isValidEnPassantSquare(fen, 'e3')).toBe(false);
-    });
-
-    it('should reject e6 if no white pawn on e5', () => {
+    it('should reject e6 if no black pawn on e5', () => {
       const fen = DEFAULT_FEN;
       expect(isValidEnPassantSquare(fen, 'e6')).toBe(false);
     });
 
     it('should reject e6 if wrong piece on e5', () => {
-      // Black pawn on e5 instead of white
+      // White pawn on e5 instead of black
       let fen = updatePieceAt(DEFAULT_FEN, 'e7', null);
-      fen = updatePieceAt(fen, 'e5', 'p'); // Black pawn, not white
+      fen = updatePieceAt(fen, 'e5', 'P'); // White pawn, not black
 
       expect(isValidEnPassantSquare(fen, 'e6')).toBe(false);
     });
 
-    it('should reject e6 if no black pawns adjacent', () => {
-      // White pawn on e5, but no black pawns on d5 or f5
-      let fen = updatePieceAt(DEFAULT_FEN, 'e7', null);
-      fen = updatePieceAt(fen, 'e5', 'P'); // White pawn on e5
-      // No black pawns on d5 or f5
-
-      expect(isValidEnPassantSquare(fen, 'e6')).toBe(false);
-    });
-
-    it('should validate a3 with proper setup', () => {
-      // Black pawn on a4, white pawn on b4
-      let fen = updatePieceAt(DEFAULT_FEN, 'a7', null);
-      fen = updatePieceAt(fen, 'a4', 'p');
-      fen = updatePieceAt(fen, 'b4', 'P');
+    it('should validate a3 when white pawn is on a4', () => {
+      // White pawn on a4 (moved from a2)
+      let fen = updatePieceAt(DEFAULT_FEN, 'a2', null);
+      fen = updatePieceAt(fen, 'a4', 'P');
 
       expect(isValidEnPassantSquare(fen, 'a3')).toBe(true);
     });
 
-    it('should validate h3 with proper setup', () => {
-      // Black pawn on h4, white pawn on g4
-      let fen = updatePieceAt(DEFAULT_FEN, 'h7', null);
-      fen = updatePieceAt(fen, 'h4', 'p');
-      fen = updatePieceAt(fen, 'g4', 'P');
+    it('should validate h3 when white pawn is on h4', () => {
+      // White pawn on h4 (moved from h2)
+      let fen = updatePieceAt(DEFAULT_FEN, 'h2', null);
+      fen = updatePieceAt(fen, 'h4', 'P');
 
       expect(isValidEnPassantSquare(fen, 'h3')).toBe(true);
     });
 
-    it('should validate with pawns on both sides', () => {
-      // Black pawn on e4, white pawns on both d4 and f4
-      let fen = updatePieceAt(DEFAULT_FEN, 'e2', null);
-      fen = updatePieceAt(fen, 'e4', 'p');
-      fen = updatePieceAt(fen, 'd4', 'P');
-      fen = updatePieceAt(fen, 'f4', 'P');
+    it('should validate all files on rank 3 when white pawns are on rank 4', () => {
+      const files = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'];
 
-      expect(isValidEnPassantSquare(fen, 'e3')).toBe(true);
+      files.forEach((file) => {
+        const targetSquare = `${file}3`;
+        const pawnSquare = `${file}4`;
+
+        let fen = DEFAULT_FEN;
+        fen = updatePieceAt(fen, pawnSquare, 'P'); // Place white pawn
+
+        expect(isValidEnPassantSquare(fen, targetSquare)).toBe(true);
+      });
+    });
+
+    it('should validate all files on rank 6 when black pawns are on rank 5', () => {
+      const files = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'];
+
+      files.forEach((file) => {
+        const targetSquare = `${file}6`;
+        const pawnSquare = `${file}5`;
+
+        let fen = DEFAULT_FEN;
+        fen = updatePieceAt(fen, pawnSquare, 'p'); // Place black pawn
+
+        expect(isValidEnPassantSquare(fen, targetSquare)).toBe(true);
+      });
     });
   });
 
   describe('getTurnFromEnPassant', () => {
-    it('should return white for rank 3 squares', () => {
-      expect(getTurnFromEnPassant('a3')).toBe('w');
-      expect(getTurnFromEnPassant('e3')).toBe('w');
-      expect(getTurnFromEnPassant('h3')).toBe('w');
+    it('should return black for rank 3 squares (white just moved)', () => {
+      expect(getTurnFromEnPassant('a3')).toBe('b');
+      expect(getTurnFromEnPassant('e3')).toBe('b');
+      expect(getTurnFromEnPassant('h3')).toBe('b');
     });
 
-    it('should return black for rank 6 squares', () => {
-      expect(getTurnFromEnPassant('a6')).toBe('b');
-      expect(getTurnFromEnPassant('e6')).toBe('b');
-      expect(getTurnFromEnPassant('h6')).toBe('b');
+    it('should return white for rank 6 squares (black just moved)', () => {
+      expect(getTurnFromEnPassant('a6')).toBe('w');
+      expect(getTurnFromEnPassant('e6')).toBe('w');
+      expect(getTurnFromEnPassant('h6')).toBe('w');
     });
 
     it('should return white for -', () => {
@@ -190,22 +195,22 @@ describe('FEN En Passant', () => {
       expect(components.enPassantTarget).toBe('e3');
     });
 
-    it('should automatically update turn to white for rank 3', () => {
-      const fen = 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR b KQkq - 0 1';
+    it('should automatically update turn to black for rank 3', () => {
+      const fen = 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1';
       const newFen = updateEnPassant(fen, 'e3');
       const components = parseFen(newFen);
 
       expect(components.enPassantTarget).toBe('e3');
-      expect(components.activeColor).toBe('w'); // Should be white's turn
+      expect(components.activeColor).toBe('b'); // Should be black's turn (white just moved)
     });
 
-    it('should automatically update turn to black for rank 6', () => {
-      const fen = 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1';
+    it('should automatically update turn to white for rank 6', () => {
+      const fen = 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR b KQkq - 0 1';
       const newFen = updateEnPassant(fen, 'e6');
       const components = parseFen(newFen);
 
       expect(components.enPassantTarget).toBe('e6');
-      expect(components.activeColor).toBe('b'); // Should be black's turn
+      expect(components.activeColor).toBe('w'); // Should be white's turn (black just moved)
     });
 
     it('should not update turn when autoUpdateTurn is false', () => {
@@ -254,7 +259,7 @@ describe('FEN En Passant', () => {
         const components = parseFen(newFen);
 
         expect(components.enPassantTarget).toBe(square);
-        expect(components.activeColor).toBe('w');
+        expect(components.activeColor).toBe('b'); // White just moved, black to play
       });
     });
 
@@ -267,32 +272,32 @@ describe('FEN En Passant', () => {
         const components = parseFen(newFen);
 
         expect(components.enPassantTarget).toBe(square);
-        expect(components.activeColor).toBe('b');
+        expect(components.activeColor).toBe('w'); // Black just moved, white to play
       });
     });
   });
 
   describe('en passant integration scenarios', () => {
-    it('should properly set up e3 en passant after black pawn e7-e5', () => {
-      // Simulate black pawn moving e7-e5 (so e3 en passant square, white to play)
-      let fen = updatePieceAt(DEFAULT_FEN, 'e7', null);
-      fen = updatePieceAt(fen, 'e5', 'p');
+    it('should properly set up e3 en passant after white pawn e2-e4', () => {
+      // Simulate white pawn moving e2-e4 (so e3 en passant square, black to play)
+      let fen = updatePieceAt(DEFAULT_FEN, 'e2', null);
+      fen = updatePieceAt(fen, 'e4', 'P');
       fen = updateEnPassant(fen, 'e3');
 
       const components = parseFen(fen);
       expect(components.enPassantTarget).toBe('e3');
-      expect(components.activeColor).toBe('w');
+      expect(components.activeColor).toBe('b'); // Black to play
     });
 
-    it('should properly set up e6 en passant after white pawn e2-e4', () => {
-      // Simulate white pawn moving e2-e4 (so e6 en passant square, black to play)
-      let fen = updatePieceAt(DEFAULT_FEN, 'e2', null);
-      fen = updatePieceAt(fen, 'e4', 'P');
+    it('should properly set up e6 en passant after black pawn e7-e5', () => {
+      // Simulate black pawn moving e7-e5 (so e6 en passant square, white to play)
+      let fen = updatePieceAt(DEFAULT_FEN, 'e7', null);
+      fen = updatePieceAt(fen, 'e5', 'p');
       fen = updateEnPassant(fen, 'e6');
 
       const components = parseFen(fen);
       expect(components.enPassantTarget).toBe('e6');
-      expect(components.activeColor).toBe('b');
+      expect(components.activeColor).toBe('w'); // White to play
     });
   });
 });

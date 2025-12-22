@@ -260,8 +260,8 @@ describe('useEnPassantInput', () => {
 
   describe('handleChange with FEN validation', () => {
     it('should accept valid en passant with correct pawn positions', () => {
-      // Position with white pawn on e4, allowing e3 en passant
-      const fen = 'rnbqkbnr/pppp1ppp/8/8/3Pp3/8/PPP1PPPP/RNBQKBNR w KQkq - 0 1';
+      // White pawn on e4 (jumped from e2 to e4, so e3 is en passant target)
+      const fen = 'rnbqkbnr/pppppppp/8/8/4P3/8/PPPP1PPP/RNBQKBNR b KQkq e3 0 1';
       const { result } = renderHook(() =>
         useEnPassantInput('-', mockOnEnPassantChange, fen)
       );
@@ -286,14 +286,14 @@ describe('useEnPassantInput', () => {
       });
 
       expect(result.current.error).toBe(
-        'Invalid: no pawns in correct position for en passant'
+        EN_PASSANT_MESSAGES.INVALID_POSITION
       );
       expect(mockOnEnPassantChange).not.toHaveBeenCalled();
     });
 
     it('should validate with FEN for rank 6', () => {
-      // Position with black pawn on e5, allowing e6 en passant
-      const fen = 'rnbqkbnr/pppp1ppp/8/3pP3/8/8/PPPP1PPP/RNBQKBNR w KQkq - 0 1';
+      // Black pawn on e5 (jumped from e7 to e5, so e6 is en passant target)
+      const fen = 'rnbqkbnr/pppp1ppp/8/4p3/8/8/PPPPPPPP/RNBQKBNR w KQkq e6 0 1';
       const { result } = renderHook(() =>
         useEnPassantInput('-', mockOnEnPassantChange, fen)
       );
