@@ -5,7 +5,7 @@
 
 A highly flexible and customizable React Native library for creating and editing chess board positions (FEN strings) without enforcing game rules. Perfect for building puzzle creators, position analysis tools, or chess setup utilities.
 
-**[📚 Full Documentation](https://your-docs-site.com)** | **[🎮 Live Demo](https://your-demo-site.com)**
+**[📚 Full Documentation](https://yonchribak.github.io/react-native-chess-board-editor/)** |
 
 ---
 
@@ -186,7 +186,7 @@ All components accept standard React Native style props:
 
 For detailed API documentation, prop references, and advanced usage examples, visit:
 
-**[📚 https://your-docs-site.com](https://your-docs-site.com)**
+**[📚 https://your-docs-site.com](https://yonchribak.github.io/react-native-chess-board-editor/)**
 
 ---
 
@@ -253,7 +253,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## 🔗 Links
 
-- [Documentation](https://your-docs-site.com)
+- [Documentation](https://yonchribak.github.io/react-native-chess-board-editor/)
 - [npm Package](https://www.npmjs.com/package/react-native-chess-board-editor)
 - [GitHub Repository](https://github.com/YonchRibak/react-native-chess-board-editor)
 - [Issue Tracker](https://github.com/YonchRibak/react-native-chess-board-editor/issues)
