@@ -4,7 +4,7 @@ import type { ComponentLayout } from '../../types/bank';
 
 describe('useBankDrag', () => {
   const mockOnPieceDropCoords = jest.fn();
-  const pieceSize = 50;
+  const floatingPieceSize = 50;
   const bankLayout: ComponentLayout = {
     x: 100,
     y: 200,
@@ -19,7 +19,7 @@ describe('useBankDrag', () => {
   describe('initialization', () => {
     it('should initialize with no dragging piece', () => {
       const { result } = renderHook(() =>
-        useBankDrag({ pieceSize, bankLayout })
+        useBankDrag({ floatingPieceSize, bankLayout })
       );
 
       expect(result.current.dragging).toBe(null);
@@ -27,7 +27,7 @@ describe('useBankDrag', () => {
 
     it('should initialize shared values', () => {
       const { result } = renderHook(() =>
-        useBankDrag({ pieceSize, bankLayout })
+        useBankDrag({ floatingPieceSize, bankLayout })
       );
 
       expect(result.current.translateX).toBeDefined();
@@ -38,7 +38,7 @@ describe('useBankDrag', () => {
 
     it('should provide drag handlers', () => {
       const { result } = renderHook(() =>
-        useBankDrag({ pieceSize, bankLayout })
+        useBankDrag({ floatingPieceSize, bankLayout })
       );
 
       expect(typeof result.current.handleDragStart).toBe('function');
@@ -50,7 +50,7 @@ describe('useBankDrag', () => {
   describe('handleDragStart', () => {
     it('should set dragging piece', () => {
       const { result } = renderHook(() =>
-        useBankDrag({ pieceSize, bankLayout })
+        useBankDrag({ floatingPieceSize, bankLayout })
       );
 
       act(() => {
@@ -66,7 +66,7 @@ describe('useBankDrag', () => {
 
     it('should set opacity to 0.5', () => {
       const { result } = renderHook(() =>
-        useBankDrag({ pieceSize, bankLayout })
+        useBankDrag({ floatingPieceSize, bankLayout })
       );
 
       act(() => {
@@ -78,7 +78,7 @@ describe('useBankDrag', () => {
 
     it('should position floating piece correctly', () => {
       const { result } = renderHook(() =>
-        useBankDrag({ pieceSize, bankLayout })
+        useBankDrag({ floatingPieceSize, bankLayout })
       );
 
       const startX = 150;
@@ -89,9 +89,8 @@ describe('useBankDrag', () => {
       });
 
       // Piece should be centered on touch point, accounting for bank position
-      const actualPieceSize = pieceSize * 0.8;
-      const expectedX = startX - bankLayout.x - actualPieceSize / 2;
-      const expectedY = startY - bankLayout.y - actualPieceSize / 2;
+      const expectedX = startX - bankLayout.x - floatingPieceSize / 2;
+      const expectedY = startY - bankLayout.y - floatingPieceSize / 2;
 
       expect(result.current.translateX.value).toBe(expectedX);
       expect(result.current.translateY.value).toBe(expectedY);
@@ -99,7 +98,7 @@ describe('useBankDrag', () => {
 
     it('should handle different pieces', () => {
       const { result } = renderHook(() =>
-        useBankDrag({ pieceSize, bankLayout })
+        useBankDrag({ floatingPieceSize, bankLayout })
       );
 
       const pieces = ['P', 'N', 'B', 'R', 'Q', 'K', 'p', 'n', 'b', 'r', 'q', 'k'];
@@ -117,7 +116,7 @@ describe('useBankDrag', () => {
   describe('handleDragUpdate', () => {
     it('should update translate values', () => {
       const { result } = renderHook(() =>
-        useBankDrag({ pieceSize, bankLayout })
+        useBankDrag({ floatingPieceSize, bankLayout })
       );
 
       // Start dragging
@@ -133,9 +132,8 @@ describe('useBankDrag', () => {
         result.current.handleDragUpdate(newX, newY);
       });
 
-      const actualPieceSize = pieceSize * 0.8;
-      const expectedX = newX - bankLayout.x - actualPieceSize / 2;
-      const expectedY = newY - bankLayout.y - actualPieceSize / 2;
+      const expectedX = newX - bankLayout.x - floatingPieceSize / 2;
+      const expectedY = newY - bankLayout.y - floatingPieceSize / 2;
 
       expect(result.current.translateX.value).toBe(expectedX);
       expect(result.current.translateY.value).toBe(expectedY);
@@ -143,7 +141,7 @@ describe('useBankDrag', () => {
 
     it('should update position multiple times', () => {
       const { result } = renderHook(() =>
-        useBankDrag({ pieceSize, bankLayout })
+        useBankDrag({ floatingPieceSize, bankLayout })
       );
 
       act(() => {
@@ -161,9 +159,8 @@ describe('useBankDrag', () => {
           result.current.handleDragUpdate(x, y);
         });
 
-        const actualPieceSize = pieceSize * 0.8;
-        const expectedX = x - bankLayout.x - actualPieceSize / 2;
-        const expectedY = y - bankLayout.y - actualPieceSize / 2;
+        const expectedX = x - bankLayout.x - floatingPieceSize / 2;
+        const expectedY = y - bankLayout.y - floatingPieceSize / 2;
 
         expect(result.current.translateX.value).toBe(expectedX);
         expect(result.current.translateY.value).toBe(expectedY);
@@ -175,7 +172,7 @@ describe('useBankDrag', () => {
     it('should call onPieceDropCoords with correct coordinates', () => {
       const { result } = renderHook(() =>
         useBankDrag({
-          pieceSize,
+          floatingPieceSize,
           bankLayout,
           onPieceDropCoords: mockOnPieceDropCoords,
         })
@@ -194,7 +191,7 @@ describe('useBankDrag', () => {
 
     it('should animate opacity from 0.5 to 0', () => {
       const { result } = renderHook(() =>
-        useBankDrag({ pieceSize, bankLayout })
+        useBankDrag({ floatingPieceSize, bankLayout })
       );
 
       act(() => {
@@ -212,7 +209,7 @@ describe('useBankDrag', () => {
 
     it('should reset dragging state', () => {
       const { result } = renderHook(() =>
-        useBankDrag({ pieceSize, bankLayout })
+        useBankDrag({ floatingPieceSize, bankLayout })
       );
 
       act(() => {
@@ -230,7 +227,7 @@ describe('useBankDrag', () => {
 
     it('should work without onPieceDropCoords callback', () => {
       const { result } = renderHook(() =>
-        useBankDrag({ pieceSize, bankLayout })
+        useBankDrag({ floatingPieceSize, bankLayout })
       );
 
       act(() => {
@@ -247,7 +244,7 @@ describe('useBankDrag', () => {
     it('should not error when no piece is dragging', () => {
       const { result } = renderHook(() =>
         useBankDrag({
-          pieceSize,
+          floatingPieceSize,
           bankLayout,
           onPieceDropCoords: mockOnPieceDropCoords,
         })
@@ -267,7 +264,7 @@ describe('useBankDrag', () => {
     it('should handle full drag lifecycle', () => {
       const { result } = renderHook(() =>
         useBankDrag({
-          pieceSize,
+          floatingPieceSize,
           bankLayout,
           onPieceDropCoords: mockOnPieceDropCoords,
         })
@@ -301,7 +298,7 @@ describe('useBankDrag', () => {
     it('should handle multiple sequential drags', () => {
       const { result } = renderHook(() =>
         useBankDrag({
-          pieceSize,
+          floatingPieceSize,
           bankLayout,
           onPieceDropCoords: mockOnPieceDropCoords,
         })
@@ -344,7 +341,7 @@ describe('useBankDrag', () => {
         mockOnPieceDropCoords.mockClear();
 
         const { result } = renderHook(() =>
-          useBankDrag({ pieceSize, bankLayout: layout })
+          useBankDrag({ floatingPieceSize, bankLayout: layout })
         );
 
         const startX = 150;
@@ -354,9 +351,8 @@ describe('useBankDrag', () => {
           result.current.handleDragStart('P', startX, startY);
         });
 
-        const actualPieceSize = pieceSize * 0.8;
-        const expectedX = startX - layout.x - actualPieceSize / 2;
-        const expectedY = startY - layout.y - actualPieceSize / 2;
+        const expectedX = startX - layout.x - floatingPieceSize / 2;
+        const expectedY = startY - layout.y - floatingPieceSize / 2;
 
         expect(result.current.translateX.value).toBe(expectedX);
         expect(result.current.translateY.value).toBe(expectedY);
@@ -370,7 +366,7 @@ describe('useBankDrag', () => {
 
       sizes.forEach((size) => {
         const { result } = renderHook(() =>
-          useBankDrag({ pieceSize: size, bankLayout })
+          useBankDrag({ floatingPieceSize: size, bankLayout })
         );
 
         const startX = 150;
@@ -380,9 +376,8 @@ describe('useBankDrag', () => {
           result.current.handleDragStart('P', startX, startY);
         });
 
-        const actualPieceSize = size * 0.8;
-        const expectedX = startX - bankLayout.x - actualPieceSize / 2;
-        const expectedY = startY - bankLayout.y - actualPieceSize / 2;
+        const expectedX = startX - bankLayout.x - size / 2;
+        const expectedY = startY - bankLayout.y - size / 2;
 
         expect(result.current.translateX.value).toBe(expectedX);
         expect(result.current.translateY.value).toBe(expectedY);
@@ -393,7 +388,7 @@ describe('useBankDrag', () => {
   describe('edge cases', () => {
     it('should handle negative coordinates', () => {
       const { result } = renderHook(() =>
-        useBankDrag({ pieceSize, bankLayout })
+        useBankDrag({ floatingPieceSize, bankLayout })
       );
 
       act(() => {
@@ -406,7 +401,7 @@ describe('useBankDrag', () => {
     it('should handle very large coordinates', () => {
       const { result } = renderHook(() =>
         useBankDrag({
-          pieceSize,
+          floatingPieceSize,
           bankLayout,
           onPieceDropCoords: mockOnPieceDropCoords,
         })
@@ -425,7 +420,7 @@ describe('useBankDrag', () => {
 
     it('should handle fractional coordinates', () => {
       const { result } = renderHook(() =>
-        useBankDrag({ pieceSize, bankLayout })
+        useBankDrag({ floatingPieceSize, bankLayout })
       );
 
       act(() => {
