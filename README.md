@@ -1,117 +1,270 @@
-# `react-native-chess-board-editor`
+# react-native-chess-board-editor
 
-A highly flexible React Native library dedicated solely to creating and editing chess board positions (FEN strings) without enforcing game rules. This library provides individual, reusable components for every part of FEN editing, along with a unified `BoardEditor` component.
+[![npm version](https://img.shields.io/npm/v/react-native-chess-board-editor.svg)](https://www.npmjs.com/package/react-native-chess-board-editor)
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
+
+A highly flexible and customizable React Native library for creating and editing chess board positions (FEN strings) without enforcing game rules. Perfect for building puzzle creators, position analysis tools, or chess setup utilities.
+
+**[📚 Full Documentation](https://your-docs-site.com)** | **[🎮 Live Demo](https://your-demo-site.com)**
 
 ---
 
-## 🚀 Project Overview
+## ✨ Features
 
-The goal of this library is to provide a complete, standalone component suite for chess board editing in React Native applications, suitable for use in puzzle creators, analysis tools, or setup utilities.
+- **🎯 Intuitive Drag & Drop** - Smooth, native gesture handling powered by Reanimated 3
+- **🎨 Fully Customizable** - Control colors, sizes, styles, and layouts
+- **♟️ Multiple Piece Sets** - Includes alpha, cburnett, and merida piece sets, plus support for custom sets
+- **🔧 Granular Components** - Use individual components or the unified `BoardEditor`
+- **🎭 No Chess Rules** - Create any position, legal or illegal
+- **📋 FEN Support** - Full FEN string editing and manipulation
+- **⚡ TypeScript** - Complete type definitions included
+- **🧪 Well Tested** - Comprehensive test coverage
 
-The library **must not** enforce the rules of chess; it should allow users to create any arbitrary and illegal board position.
+---
 
-### Core Dependencies
+## 📦 Installation
 
-* **React Native Reanimated & React Native Gesture Handler:** Essential for smooth, performant native drag-and-drop functionality.
-* **`chess.js` (or similar):** To parse, validate (structurally, not legally), and serialize FEN strings.
+```bash
+npm install react-native-chess-board-editor
+```
+
+or
+
+```bash
+yarn add react-native-chess-board-editor
+```
+
+### Peer Dependencies
+
+This library requires the following peer dependencies:
+
+```bash
+npm install react-native-gesture-handler react-native-reanimated react-native-svg
+```
+
+Make sure to complete the setup for [react-native-gesture-handler](https://docs.swmansion.com/react-native-gesture-handler/docs/fundamentals/installation) and [react-native-reanimated](https://docs.swmansion.com/react-native-reanimated/docs/fundamentals/installation).
+
+---
+
+## 🚀 Quick Start
+
+### Basic Usage
+
+```tsx
+import React, { useState } from 'react';
+import { View } from 'react-native';
+import { BoardEditor } from 'react-native-chess-board-editor';
+
+export default function App() {
+  const [fen, setFen] = useState('rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1');
+
+  return (
+    <View style={{ flex: 1, padding: 20 }}>
+      <BoardEditor
+        initialFen={fen}
+        onFenChange={setFen}
+      />
+    </View>
+  );
+}
+```
+
+### Using Individual Components
+
+```tsx
+import React, { useState } from 'react';
+import { View } from 'react-native';
+import {
+  EditableBoard,
+  PieceBank,
+  FenDisplay,
+  TurnToggler,
+  CastlingRightsTogglers,
+} from 'react-native-chess-board-editor';
+
+export default function CustomEditor() {
+  const [fen, setFen] = useState('rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1');
+
+  return (
+    <View>
+      <EditableBoard fen={fen} onFenChange={setFen} />
+      <PieceBank />
+      <FenDisplay fen={fen} onFenChange={setFen} editable />
+      <TurnToggler turn="w" onTurnChange={(turn) => {/* handle */}} />
+      <CastlingRightsTogglers castlingRights="KQkq" onCastlingChange={(rights) => {/* handle */}} />
+    </View>
+  );
+}
+```
 
 ---
 
 ## 🧩 Components
 
-All components must be highly customizable via standard React Native `style` props or dedicated UI props (e.g., `color`, `gap`).
+### Core Components
 
-### 1. `EditableBoard`
+| Component | Description |
+|-----------|-------------|
+| `BoardEditor` | All-in-one component combining board, bank, and controls |
+| `EditableBoard` | Interactive chess board with drag & drop |
+| `PieceBank` | Piece palette for adding pieces to the board |
+| `FenDisplay` | Display and edit FEN strings |
 
-The central component for piece manipulation.
+### Control Components
 
-* **Functionality:**
-    * Renders a standard 8x8 chess board.
-    * Displays pieces based on the current FEN state.
-    * Supports **free drag-and-drop** of pieces between squares.
-    * **Drag Off Board:** When a piece is dragged outside the board boundaries and dropped, it is removed from the FEN.
-* **Props:**
-    * `fen`: The current FEN string (required).
-    * `onFenChange`: Callback function `(newFen: string) => void` triggered after any successful piece manipulation (drag-and-drop, removal, or addition).
-    * `squareSize`: Numeric size of a single square.
-    * `lightSquareColor`, `darkSquareColor`: Colors for the squares.
-    * `pieceStyle`: Style object applied to all chess pieces.
+| Component | Description |
+|-----------|-------------|
+| `TurnToggler` | Switch between white and black to move |
+| `CastlingRightsTogglers` | Toggle castling availability (K, Q, k, q) |
+| `EnPassantInput` | Set en passant target square |
+| `EditorToolsPanel` | Collection of editor utility buttons |
+| `PieceSetSelector` | Switch between different piece set styles |
+| `FlipBoardButton` | Rotate the board 180° |
 
-### 2. `PieceBank`
+### Utility Components
 
-A source for adding new pieces to the board.
-
-* **Functionality:**
-    * Displays one of each standard piece (White: P, B, N, R, Q, K; Black: p, b, n, r, q, k).
-    * Allows dragging any piece **onto** the `EditableBoard`.
-    * **Non-Destructive:** The source piece remains in the bank after being dragged.
-* **Props:**
-    * `onPieceDrop`: Callback function `(piece: PieceSymbol, targetSquare: Square) => void` (must be integrated with `EditableBoard` logic via the parent `BoardEditor`).
-    * `layout`: 'horizontal' or 'vertical' arrangement for the pieces.
-    * `bankStyle`: Style object for the bank container.
-    * `pieceStyle`: Style object for the individual pieces in the bank.
-
-### 3. `FenDisplay`
-
-Component for viewing and manually editing the FEN string.
-
-* **Functionality:**
-    * Always displays the current FEN.
-    * When the `editable` prop is true, it renders a text input field for manual FEN entry.
-* **Props:**
-    * `fen`: The current FEN string (required).
-    * `onFenChange`: Callback function `(newFen: string) => void` triggered when a user manually submits a new FEN string.
-    * `editable`: Boolean to enable/disable the text input field.
-    * `inputStyle`: Style object for the text input.
+| Component | Description |
+|-----------|-------------|
+| `Piece` | Render individual chess pieces |
+| `RankLabels` | Display rank labels (1-8) |
+| `FileLabels` | Display file labels (a-h) |
 
 ---
 
-## ⚙️ FEN Modifier Components
+## 🎨 Customization
 
-These smaller components manage the remaining five fields of the FEN (excluding piece placement).
+### Theming
 
-### 4. `CastlingRightsTogglers`
+Use the `BoardThemeProvider` to customize board appearance:
 
-* **Functionality:** Provides four independent toggles (checkboxes or similar):
-    * White King-side (`K`)
-    * White Queen-side (`Q`)
-    * Black King-side (`k`)
-    * Black Queen-side (`q`)
-* **Props:**
-    * `castlingRights`: The current castling rights string (e.g., `'KQkq'`).
-    * `onCastlingChange`: Callback function `(newCastlingRights: string) => void`.
+```tsx
+import { BoardThemeProvider } from 'react-native-chess-board-editor';
 
-### 5. `EnPassantInput`
+<BoardThemeProvider
+  theme={{
+    lightSquareColor: '#F0D9B5',
+    darkSquareColor: '#B58863',
+    squareSize: 45,
+  }}
+>
+  <BoardEditor initialFen={fen} onFenChange={setFen} />
+</BoardThemeProvider>
+```
 
-* **Functionality:** A text input for specifying the en passant target square (e.g., `e3` or `b6`).
-* **FEN Rule Constraint:** The input square must be a valid en passant target (i.e., it must be on the 3rd rank for black or 6th rank for white). The component should only pass a valid square (e.g., `e3`) or a hyphen (`-`) to the callback.
-* **Props:**
-    * `enPassantSquare`: The current en passant target square (e.g., `'a3'` or `'-'`).
-    * `onEnPassantChange`: Callback function `(square: string) => void`.
+### Custom Piece Sets
 
-### 6. `TurnToggler`
+Register and use custom piece renderers:
 
-* **Functionality:** A simple toggle (or radio button) to switch between White's move (`w`) and Black's move (`b`).
-* **Props:**
-    * `turn`: The current side to move (`'w'` or `'b'`).
-    * `onTurnChange`: Callback function `(newTurn: 'w' | 'b') => void`.
+```tsx
+import { registerCustomPieceSet, BoardEditor } from 'react-native-chess-board-editor';
+
+registerCustomPieceSet('myCustomSet', {
+  K: (props) => <MyWhiteKing {...props} />,
+  Q: (props) => <MyWhiteQueen {...props} />,
+  // ... other pieces
+});
+
+<BoardEditor pieceSet="myCustomSet" />
+```
+
+### Styling Props
+
+All components accept standard React Native style props:
+
+```tsx
+<EditableBoard
+  squareSize={50}
+  lightSquareColor="#ECECEC"
+  darkSquareColor="#769656"
+  style={{ borderRadius: 8 }}
+/>
+```
 
 ---
 
-## 👑 The Unified Component
+## 📖 API Documentation
 
-### 7. `BoardEditor`
+For detailed API documentation, prop references, and advanced usage examples, visit:
 
-This component integrates all the above components into a single, cohesive, and functional unit.
+**[📚 https://your-docs-site.com](https://your-docs-site.com)**
 
-* **Functionality:**
-    * Manages the single source of truth for the entire FEN state.
-    * Renders the `EditableBoard`, `PieceBank`, `FenDisplay`, and all FEN modifier components (`CastlingRightsTogglers`, `EnPassantInput`, `TurnToggler`).
-    * Passes the current FEN and change handlers to all child components, ensuring seamless synchronization. For example, changing the `TurnToggler` immediately updates the FEN, which is then reflected in the `FenDisplay`.
-* **Props:**
-    * `initialFen`: The starting FEN string (optional, defaults to standard starting position).
-    * `onFenChange`: Master callback for any change in the FEN.
-    * `containerStyle`: Style object for the main component wrapper.
-    * `uiConfig`: An object to allow fine-grained styling and layout adjustments (e.g., `bankLayout: 'horizontal'`, `showFenDisplay: true`).
+---
 
-**The implementation focus for the AI should be on state management and correctly combining the updates from all individual components into a final, valid FEN string.**
+## 🔧 Advanced Features
+
+### FEN Utilities
+
+The library exports utility functions for FEN manipulation:
+
+```tsx
+import { parseFen, updateFenField, validateFen } from 'react-native-chess-board-editor';
+
+const fenParts = parseFen('rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1');
+const newFen = updateFenField(fen, 'turn', 'b');
+const isValid = validateFen(fen);
+```
+
+### Custom Piece Filtering
+
+Filter pieces shown in the PieceBank:
+
+```tsx
+import { PieceBank, whitePiecesOnly } from 'react-native-chess-board-editor';
+
+<PieceBank pieceFilter={whitePiecesOnly} />
+```
+
+### Board Flipping
+
+The board can be flipped to show from black's perspective:
+
+```tsx
+<EditableBoard fen={fen} onFenChange={setFen} flipped />
+```
+
+---
+
+## 📋 Requirements
+
+- React Native >= 0.64
+- react-native-gesture-handler >= 2.0.0
+- react-native-reanimated >= 3.0.0
+- react-native-svg >= 13.0.0
+
+---
+
+## 🤝 Contributing
+
+Contributions are welcome! Please feel free to submit a Pull Request.
+
+1. Fork the repository
+2. Create your feature branch (`git checkout -b feature/AmazingFeature`)
+3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
+4. Push to the branch (`git push origin feature/AmazingFeature`)
+5. Open a Pull Request
+
+---
+
+## 📄 License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+---
+
+## 🔗 Links
+
+- [Documentation](https://your-docs-site.com)
+- [npm Package](https://www.npmjs.com/package/react-native-chess-board-editor)
+- [GitHub Repository](https://github.com/YonchRibak/react-native-chess-board-editor)
+- [Issue Tracker](https://github.com/YonchRibak/react-native-chess-board-editor/issues)
+
+---
+
+## 🙏 Acknowledgments
+
+- Piece sets from [lichess.org](https://lichess.org)
+- Built with [react-native-builder-bob](https://github.com/callstack/react-native-builder-bob)
+
+---
+
+Made with ❤️ for the React Native community
