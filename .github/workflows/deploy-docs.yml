@@ -13,7 +13,7 @@ jobs:
       - name: Install and Build
         run: |
           npm install
-          npx typedoc --out docs src/index.ts
+          npx typedoc --out docs src/index.tsx
 
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
