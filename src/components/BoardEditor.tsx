@@ -47,21 +47,56 @@ export const BoardEditor: React.FC<BoardEditorProps> = ({
 
   const { pieceSet, handlePieceSetChange } = usePieceSet(initialPieceSet, onPieceSetChange);
 
+  const { flipped: initialFlipped = false } = uiConfig;
+
+  // Destructure pieceBank config
   const {
-    bankLayout = 'horizontal',
-    showFenDisplay = true,
-    fenEditable = true,
+    show: showPieceBank = true,
+    layout: bankLayout = 'horizontal',
+    bankStyle,
+    pieceStyle: bankPieceStyle,
+    pieceSize: bankPieceSize,
+    showLabel: showBankLabel = false,
+    labelConfig: bankLabelConfig,
+  } = uiConfig.pieceBank || {};
+
+  // Destructure editableBoard config
+  const {
+    pieceStyle: boardPieceStyle,
+    boardStyle,
+    coordinateLabels,
+  } = uiConfig.editableBoard || {};
+
+  // Destructure fenDisplay config
+  const {
+    show: showFenDisplay = true,
+    editable: fenEditable = true,
+    inputStyle: fenInputStyle,
+    containerStyle: fenContainerStyle,
+  } = uiConfig.fenDisplay || {};
+
+  // Destructure editorToolsPanel config
+  const {
+    show: showEditorToolsPanel = true,
+    initialExpanded: editorToolsPanelExpanded = false,
+    title: editorToolsPanelTitle = 'Editor Tools',
+    containerStyle: editorToolsPanelContainerStyle,
+    headerStyle: editorToolsPanelHeaderStyle,
+    contentStyle: editorToolsPanelContentStyle,
+    showTurnToggler = true,
     showCastlingRights = true,
     showEnPassantInput = true,
-    showTurnToggler = true,
-    showPieceBank = true,
-    flipped: initialFlipped = false,
-    showEditorToolsPanel = true,
-    editorToolsPanelExpanded = false,
     showPieceSetSelector = true,
-    showFlipBoardButton = true,
-    flipBoardButtonLocation = 'overlay',
-  } = uiConfig;
+  } = uiConfig.editorToolsPanel || {};
+
+  // Destructure flipBoardButton config
+  const {
+    show: showFlipBoardButton = true,
+    location: flipBoardButtonLocation = 'overlay',
+    containerStyle: flipBoardButtonContainerStyle,
+    buttonStyle: flipBoardButtonStyle,
+    variant: flipBoardButtonVariant,
+  } = uiConfig.flipBoardButton || {};
 
   // Manage flipped state internally
   const [flipped, setFlipped] = useState(initialFlipped);
@@ -117,6 +152,11 @@ export const BoardEditor: React.FC<BoardEditorProps> = ({
               layout={bankLayout}
               color="black"
               onPieceDropCoords={handlePieceDropFromBank}
+              bankStyle={bankStyle}
+              pieceStyle={bankPieceStyle}
+              pieceSize={bankPieceSize}
+              showLabel={showBankLabel}
+              labelConfig={bankLabelConfig}
             />
           </View>
         )}
@@ -131,6 +171,9 @@ export const BoardEditor: React.FC<BoardEditorProps> = ({
             fen={fen}
             onFenChange={handleFenChange}
             flipped={flipped}
+            pieceStyle={boardPieceStyle}
+            boardStyle={boardStyle}
+            coordinateLabels={coordinateLabels}
           />
         </View>
 
@@ -140,7 +183,9 @@ export const BoardEditor: React.FC<BoardEditorProps> = ({
             <FlipBoardButton
               flipped={flipped}
               onFlipChange={setFlipped}
-              variant="overlay"
+              variant={flipBoardButtonVariant || (flipBoardButtonLocation === 'overlay' ? 'overlay' : 'inline')}
+              containerStyle={flipBoardButtonContainerStyle}
+              buttonStyle={flipBoardButtonStyle}
             />
           </View>
         )}
@@ -152,6 +197,11 @@ export const BoardEditor: React.FC<BoardEditorProps> = ({
               layout={bankLayout}
               color="white"
               onPieceDropCoords={handlePieceDropFromBank}
+              bankStyle={bankStyle}
+              pieceStyle={bankPieceStyle}
+              pieceSize={bankPieceSize}
+              showLabel={showBankLabel}
+              labelConfig={bankLabelConfig}
             />
           </View>
         )}
@@ -163,6 +213,8 @@ export const BoardEditor: React.FC<BoardEditorProps> = ({
               fen={fen}
               onFenChange={handleFenChange}
               editable={fenEditable}
+              inputStyle={fenInputStyle}
+              containerStyle={fenContainerStyle}
             />
           </View>
         )}
@@ -178,9 +230,12 @@ export const BoardEditor: React.FC<BoardEditorProps> = ({
         {showEditorToolsPanel && (
           <View style={styles.section}>
             <EditorToolsPanel
-              title="Editor Tools"
+              title={editorToolsPanelTitle}
               initialExpanded={editorToolsPanelExpanded}
               renderContent={() => editorToolsLayout.inPanel}
+              containerStyle={editorToolsPanelContainerStyle}
+              headerStyle={editorToolsPanelHeaderStyle}
+              contentStyle={editorToolsPanelContentStyle}
             />
           </View>
         )}

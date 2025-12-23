@@ -180,6 +180,79 @@ All components accept standard React Native style props:
 />
 ```
 
+### UI Configuration
+
+The `BoardEditor` component accepts a nested `uiConfig` prop that allows you to configure all aspects of the editor UI:
+
+```tsx
+<BoardEditor
+  initialFen={fen}
+  onFenChange={setFen}
+  uiConfig={{
+    // Board orientation
+    flipped: false,
+
+    // Piece bank configuration
+    pieceBank: {
+      show: true,
+      layout: 'horizontal',
+      pieceSize: 40,
+      showLabel: true,
+      labelConfig: {
+        fontSize: 14,
+        color: '#333',
+        fontWeight: '600',
+      },
+      bankStyle: { backgroundColor: '#f5f5f5' },
+      pieceStyle: { margin: 4 },
+    },
+
+    // Board configuration
+    editableBoard: {
+      coordinateLabels: {
+        show: true,
+        fontSize: 12,
+        color: '#666',
+      },
+      boardStyle: { borderRadius: 4 },
+      pieceStyle: { opacity: 1 },
+    },
+
+    // FEN display configuration
+    fenDisplay: {
+      show: true,
+      editable: true,
+      inputStyle: { fontSize: 14 },
+      containerStyle: { padding: 8 },
+    },
+
+    // Editor tools panel configuration
+    editorToolsPanel: {
+      show: true,
+      title: 'Editor Tools',
+      initialExpanded: false,
+      showTurnToggler: true,
+      showCastlingRights: true,
+      showEnPassantInput: true,
+      showPieceSetSelector: true,
+      containerStyle: { borderRadius: 8 },
+    },
+
+    // Flip board button configuration
+    flipBoardButton: {
+      show: true,
+      location: 'overlay',
+      variant: 'overlay',
+      buttonStyle: { backgroundColor: '#007AFF' },
+    },
+  }}
+/>
+```
+
+All nested configuration properties are optional and have sensible defaults. The nested structure provides full TypeScript IntelliSense support for easy discovery of available options.
+
+**Migrating from v0.1.0?** See [MIGRATION.md](./MIGRATION.md) for a complete migration guide.
+
 ---
 
 ## 📖 API Documentation

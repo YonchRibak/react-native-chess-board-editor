@@ -184,35 +184,109 @@ export interface EditorToolsPanelProps {
 }
 
 /**
- * UI configuration for BoardEditor
+ * Piece bank UI configuration for BoardEditor
  */
-export interface BoardEditorUIConfig {
-  /** Layout for piece bank */
-  bankLayout?: 'horizontal' | 'vertical';
+export interface PieceBankUIConfig {
+  /** Whether to show piece bank */
+  show?: boolean;
+  /** Layout orientation */
+  layout?: 'horizontal' | 'vertical';
+  /** Style for the bank container */
+  bankStyle?: StyleProp<ViewStyle>;
+  /** Style for individual pieces */
+  pieceStyle?: StyleProp<ViewStyle>;
+  /** Piece size in pixels */
+  pieceSize?: number;
+  /** Whether to show the label above the pieces */
+  showLabel?: boolean;
+  /** Configuration for label styling */
+  labelConfig?: BankLabelConfig;
+}
+
+/**
+ * Editable board UI configuration for BoardEditor
+ */
+export interface EditableBoardUIConfig {
+  /** Style for chess pieces */
+  pieceStyle?: StyleProp<ViewStyle>;
+  /** Custom style for the board container */
+  boardStyle?: StyleProp<ViewStyle>;
+  /** Configuration for rank and file coordinate labels */
+  coordinateLabels?: CoordinateLabelsConfig;
+}
+
+/**
+ * FEN display UI configuration for BoardEditor
+ */
+export interface FenDisplayUIConfig {
   /** Whether to show FEN display */
-  showFenDisplay?: boolean;
-  /** Whether FEN display is editable */
-  fenEditable?: boolean;
+  show?: boolean;
+  /** Whether the FEN is editable */
+  editable?: boolean;
+  /** Style for the input field */
+  inputStyle?: StyleProp<TextStyle>;
+  /** Style for the container */
+  containerStyle?: StyleProp<ViewStyle>;
+}
+
+/**
+ * Editor tools panel UI configuration for BoardEditor
+ */
+export interface EditorToolsPanelUIConfig {
+  /** Whether to show editor tools panel */
+  show?: boolean;
+  /** Initial expanded state for editor tools panel */
+  initialExpanded?: boolean;
+  /** Panel title */
+  title?: string;
+  /** Container style */
+  containerStyle?: StyleProp<ViewStyle>;
+  /** Header style */
+  headerStyle?: StyleProp<ViewStyle>;
+  /** Content style */
+  contentStyle?: StyleProp<ViewStyle>;
+  /** Whether to show turn toggler */
+  showTurnToggler?: boolean;
   /** Whether to show castling rights togglers */
   showCastlingRights?: boolean;
   /** Whether to show en passant input */
   showEnPassantInput?: boolean;
-  /** Whether to show turn toggler */
-  showTurnToggler?: boolean;
-  /** Whether to show piece bank */
-  showPieceBank?: boolean;
-  /** Board orientation */
-  flipped?: boolean;
-  /** Whether to show editor tools panel */
-  showEditorToolsPanel?: boolean;
-  /** Initial expanded state for editor tools panel */
-  editorToolsPanelExpanded?: boolean;
   /** Whether to show piece set selector */
   showPieceSetSelector?: boolean;
+}
+
+/**
+ * Flip board button UI configuration for BoardEditor
+ */
+export interface FlipBoardButtonUIConfig {
   /** Whether to show flip board button */
-  showFlipBoardButton?: boolean;
+  show?: boolean;
   /** Where to show flip board button: 'overlay' for bottom-right corner of board, 'panel' for editor tools panel */
-  flipBoardButtonLocation?: 'overlay' | 'panel';
+  location?: 'overlay' | 'panel';
+  /** Container style */
+  containerStyle?: StyleProp<ViewStyle>;
+  /** Button style */
+  buttonStyle?: StyleProp<ViewStyle>;
+  /** Variant: 'overlay' for floating button, 'inline' for panel */
+  variant?: 'overlay' | 'inline';
+}
+
+/**
+ * UI configuration for BoardEditor
+ */
+export interface BoardEditorUIConfig {
+  /** Board orientation - whether to flip the board (show from black's perspective) */
+  flipped?: boolean;
+  /** Piece bank configuration */
+  pieceBank?: PieceBankUIConfig;
+  /** Editable board configuration */
+  editableBoard?: EditableBoardUIConfig;
+  /** FEN display configuration */
+  fenDisplay?: FenDisplayUIConfig;
+  /** Editor tools panel configuration */
+  editorToolsPanel?: EditorToolsPanelUIConfig;
+  /** Flip board button configuration */
+  flipBoardButton?: FlipBoardButtonUIConfig;
 }
 
 /**

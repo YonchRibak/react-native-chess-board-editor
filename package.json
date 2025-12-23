@@ -1,6 +1,6 @@
 {
   "name": "react-native-chess-board-editor",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "A highly flexible React Native library for creating and editing chess board positions (FEN strings) without enforcing game rules",
   "main": "lib/commonjs/index.js",
   "module": "lib/module/index.js",

@@ -25,6 +25,11 @@ export type {
   TurnTogglerProps,
   FlipBoardButtonProps,
   EditorToolsPanelProps,
+  PieceBankUIConfig,
+  EditableBoardUIConfig,
+  FenDisplayUIConfig,
+  EditorToolsPanelUIConfig,
+  FlipBoardButtonUIConfig,
   BoardEditorUIConfig,
   BoardEditorProps,
 } from './props';

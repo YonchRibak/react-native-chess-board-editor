@@ -62,11 +62,13 @@ describe('BoardEditor Component', () => {
         <BoardEditor
           onFenChange={mockOnFenChange}
           uiConfig={{
-            showFenDisplay: false,
-            showTurnToggler: false,
-            showCastlingRights: false,
-            showEnPassantInput: false,
-            showPieceBank: false,
+            fenDisplay: { show: false },
+            editorToolsPanel: {
+              showTurnToggler: false,
+              showCastlingRights: false,
+              showEnPassantInput: false,
+            },
+            pieceBank: { show: false },
           }}
         />
       );
@@ -261,7 +263,7 @@ describe('BoardEditor Component', () => {
       const { queryByLabelText, getByText } = render(
         <BoardEditor
           onFenChange={mockOnFenChange}
-          uiConfig={{ fenEditable: false }}
+          uiConfig={{ fenDisplay: { editable: false } }}
         />
       );
 
@@ -305,6 +307,145 @@ describe('BoardEditor Component', () => {
       );
 
       // Board should be rendered with custom colors
+      expect(toJSON()).toBeTruthy();
+    });
+  });
+
+  describe('nested uiConfig', () => {
+    it('should configure PieceBank with nested config', () => {
+      const { toJSON } = render(
+        <BoardEditor
+          onFenChange={mockOnFenChange}
+          uiConfig={{
+            pieceBank: {
+              show: true,
+              layout: 'vertical',
+              pieceSize: 40,
+              showLabel: true,
+            },
+          }}
+        />
+      );
+      expect(toJSON()).toBeTruthy();
+    });
+
+    it('should configure EditableBoard with nested config', () => {
+      const customBoardStyle = { borderRadius: 10 };
+      const { toJSON } = render(
+        <BoardEditor
+          onFenChange={mockOnFenChange}
+          uiConfig={{
+            editableBoard: {
+              boardStyle: customBoardStyle,
+              coordinateLabels: { show: false },
+            },
+          }}
+        />
+      );
+      expect(toJSON()).toBeTruthy();
+    });
+
+    it('should configure FenDisplay with nested config', () => {
+      const customInputStyle = { fontSize: 16 };
+      const { getByText } = render(
+        <BoardEditor
+          onFenChange={mockOnFenChange}
+          uiConfig={{
+            fenDisplay: {
+              show: true,
+              editable: false,
+              inputStyle: customInputStyle,
+            },
+          }}
+        />
+      );
+      expect(getByText('FEN:')).toBeTruthy();
+    });
+
+    it('should configure EditorToolsPanel with nested config', () => {
+      const { getByText } = render(
+        <BoardEditor
+          onFenChange={mockOnFenChange}
+          uiConfig={{
+            editorToolsPanel: {
+              show: true,
+              title: 'Custom Tools',
+              initialExpanded: true,
+              showTurnToggler: true,
+              showCastlingRights: false,
+            },
+          }}
+        />
+      );
+      expect(getByText('Custom Tools')).toBeTruthy();
+    });
+
+    it('should configure FlipBoardButton with nested config', () => {
+      const { toJSON } = render(
+        <BoardEditor
+          onFenChange={mockOnFenChange}
+          uiConfig={{
+            flipBoardButton: {
+              show: true,
+              location: 'panel',
+              variant: 'inline',
+            },
+          }}
+        />
+      );
+      expect(toJSON()).toBeTruthy();
+    });
+
+    it('should handle deeply nested configuration', () => {
+      const { toJSON } = render(
+        <BoardEditor
+          onFenChange={mockOnFenChange}
+          uiConfig={{
+            flipped: true,
+            pieceBank: {
+              show: true,
+              layout: 'horizontal',
+              pieceSize: 45,
+              showLabel: true,
+              labelConfig: {
+                fontSize: 16,
+                color: '#000',
+                fontWeight: 'bold',
+              },
+            },
+            editableBoard: {
+              coordinateLabels: {
+                show: true,
+                fontSize: 14,
+                color: '#666',
+              },
+            },
+            fenDisplay: {
+              show: true,
+              editable: true,
+            },
+          }}
+        />
+      );
+      expect(toJSON()).toBeTruthy();
+    });
+
+    it('should use defaults when nested config is undefined', () => {
+      const { toJSON } = render(
+        <BoardEditor onFenChange={mockOnFenChange} uiConfig={{}} />
+      );
+      expect(toJSON()).toBeTruthy();
+    });
+
+    it('should use defaults when specific nested config is omitted', () => {
+      const { toJSON } = render(
+        <BoardEditor
+          onFenChange={mockOnFenChange}
+          uiConfig={{
+            pieceBank: { show: true },
+          }}
+        />
+      );
       expect(toJSON()).toBeTruthy();
     });
   });
